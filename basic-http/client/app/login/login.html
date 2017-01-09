@@ -1,0 +1,36 @@
+﻿
+<md-content layout-fill layout="column" layout-align="center center">
+    <div flex>&nbsp;</div>
+    <form flex name="loginform">
+        <md-card flex>
+            <md-card-header>
+                <md-card-header-text><span class="md-title">Login</span></md-card-header-text>
+            </md-card-header>
+            <md-card-content flex layout="column">
+                <div flex layout="row">
+                    <md-input-container class="md-block">
+                        <label>Username </label>
+                        <input name="username" ng-model="vm.loginmodel.username" required maxlength="16" />
+                        <div ng-messages="loginform.username.$error" role="alert" multiple md-auto-hide="false">
+                            <div ng-messages-include="error-messages"></div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>Password</label>
+                        <input name="userpass" ng-model="vm.loginmodel.password" type="password" required maxlength="16" minlength="2" />
+                        <div ng-messages="loginform.userpass.$error" role="alert" multiple md-auto-hide="false">
+                            <div ng-messages-include="error-messages"></div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div ng-messages="{error: !!vm.httpError.error}" role="alert">
+                    <div ng-message="error">{{vm.httpError.error}}</div>
+                </div>
+            </md-card-content>
+            <md-card-actions layout="row" style="margin-top:0" layout-align="space-between center">
+                <md-button class="md-block md-raised" type="submit" ng-disabled="loginform.$invalid" ng-click="vm.login()">Login</md-button>
+            </md-card-actions>
+        </md-card>
+    </form>
+    <div flex>&nbsp;</div>
+</md-content>
