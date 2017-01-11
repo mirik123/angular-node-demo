@@ -1,15 +1,71 @@
 ﻿import fs = require('fs');
-var _ = require("lodash");
-var uuid = require('node-uuid');
+import _ = require("lodash");
+import crypto = require('crypto');
+
+class BaseRecord {
+    loginsuccesson?: string;
+    loginfailureon?: string;
+    failedlogins?: number;
+    updatedon?: string;
+    createdon?: string;    
+    loginip?: string;   
+}
+
+class Record extends BaseRecord {
+    username: string;
+    email: string;
+    birthdate: string;
+    permissions: string;  
+    password: string;
+    salt: string;      
+}
 
 export class DB {
-    static records = require('./users.json');
+    static records: { [id: string]: Record; } = require('./users.json');
     static session = {};
+
+    static hash(password: string, salt: string) {
+        return crypto.createHmac('sha256', salt)
+            .update(password)
+            .digest('hex'); 
+    }
+
+    static random() {
+        return crypto.randomBytes(8).toString('hex');
+    }
+
+    static seed() {
+        DB.records = {};
+
+        var salt = DB.random();
+        DB.records['admin'] = {
+            username: 'admin',
+            email: 'admin@com',
+            birthdate: new Date().toISOString(),
+            permissions: 'admin',
+            salt: salt,
+            password: DB.hash('123', salt)
+        };
+
+        salt = DB.random();
+        DB.records['user'] = {
+            username: 'user',
+            email: 'user@com',
+            birthdate: new Date().toISOString(),
+            permissions: 'user',
+            salt: salt,
+            password: DB.hash('123', salt)
+        };
+
+        fs.writeFile(__dirname + '/users.json', JSON.stringify(DB.records, null, 3), (err: NodeJS.ErrnoException) => {
+            console.error('add', err);
+        });
+    }
 
     static login(username: string, pass: string, ip:string) {
         var record = DB.records[username];
-        if (record && record.password === pass) {
-            var sessionid = uuid.v4();
+        if (record && record.password === DB.hash(pass, record.salt)) {
+            var sessionid = DB.random();
             DB.session[sessionid] = [record.permissions, username, ip];
 
             record.loginsuccesson = new Date().toISOString();
@@ -41,12 +97,15 @@ export class DB {
         return !authtoken || !DB.session[authtoken] ? [false, 'session is invalid'] : [true, DB.session[authtoken]];
     }
 
-    static add(record, authtoken: string) {
+    static add(record:Record, authtoken: string) {
         if (DB.records[record.username]) return [false, 'user already exists'];
         if (authtoken && DB.session[authtoken][0] !== 'admin') return [false, 'operation requires special permission'];
 
+        var salt = DB.random();
         DB.records[record.username] = {
-            password: record.password,
+            username: record.username,
+            password: DB.hash(record.password, salt),
+            salt: salt,
             permissions: record.permissions,
             email: record.email,
             birthdate: record.birthdate,
@@ -65,7 +124,7 @@ export class DB {
         });
 
         if (!authtoken) {
-            var sessionid = uuid.v4();
+            var sessionid = DB.random();
             DB.session[sessionid] = ['user', record.username, record.loginip];
             return [true, sessionid];
         }
@@ -91,27 +150,31 @@ export class DB {
         var record = DB.records[user];
         if (!record) return [false, 'user not found or password is incorrect'];
 
-        record = _.omit(record, 'password');
-        return [true, record];
+        var record2 = _.omit(record, ['password', 'salt']);
+        return [true, record2];
     }
 
     static getall(authtoken: string) {
-        if (DB.session[authtoken][0] !== 'admin') return [false, 'operation requires special permission'];
+        if (DB.session[authtoken][0] !== 'admin') return [false, <any>'operation requires special permission'];
 
-        var res = _.map(DB.records, (itm, key) => {
-            itm = _.omit(itm, 'password');
-            itm.username = key;
+        var res = _.map(DB.records, (itm:any, key) => {
+            itm = _.omit(itm, ['password', 'salt']);
             return itm;
         });
 
         return [true, res];
     }
 
-    static update(record, authtoken: string) {
+    static update(record: Record, authtoken: string) {
         if (!DB.records[record.username]) return [false, 'user not found or password is incorrect'];
         if (DB.session[authtoken][0] !== 'admin' && DB.session[authtoken][1] !== record.username) return [false, 'operation requires special permission'];
 
-        if (record.password) DB.records[record.username].password = record.password;
+        if (record.password) {
+            var salt = DB.random();
+            DB.records[record.username].salt = salt;
+            DB.records[record.username].password = DB.hash(record.password, salt);
+        }
+
         if (record.permissions && DB.session[authtoken][0] === 'admin') DB.records[record.username].permissions = record.permissions;
 
         DB.records[record.username].email = record.email;
