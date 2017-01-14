@@ -68,7 +68,7 @@ export class DB {
         });
     }
 
-    static login(username: string, pass: string, ip:string) {
+    static login(username: string, pass: string, ip: string): any[] {
         var record = DB.records[username];
         if (record && record.password === DB.hash(pass, record.salt)) {
             var sessionid = DB.random();
@@ -81,7 +81,7 @@ export class DB {
                 console.error('add', err);
             });
 
-            return [true, sessionid];
+            return [true, 200, sessionid];
         }
 
         if (record) {
@@ -92,20 +92,20 @@ export class DB {
             });
         }
 
-        return [false, 'user not found or password is incorrect'];
+        return [false, 401, 'user not found or password is incorrect'];
     }
 
     static logout(authtoken: string):void {
         delete DB.session[authtoken];
     }
 
-    static validate(authtoken: string) {
-        return !authtoken || !DB.session[authtoken] ? [false, 'session is invalid'] : [true, DB.session[authtoken]];
+    static validate(authtoken: string): any[] {
+        return !authtoken || !DB.session[authtoken] ? [false, 401, 'session is invalid'] : [true, 200, DB.session[authtoken]];
     }
 
-    static add(record:Record, authtoken: string) {
-        if (DB.records[record.username]) return [false, 'user already exists'];
-        if (authtoken && DB.session[authtoken][0] !== 'admin') return [false, 'operation requires special permission'];
+    static add(record: Record, authtoken: string): any[] {
+        if (DB.records[record.username]) return [false, 500, 'user already exists'];
+        if (authtoken && DB.session[authtoken][0] !== 'admin') return [false, 403, 'operation requires special permission'];
 
         var salt = DB.random();
         DB.records[record.username] = {
@@ -132,48 +132,48 @@ export class DB {
         if (!authtoken) {
             var sessionid = DB.random();
             DB.session[sessionid] = ['user', record.username, record.loginip];
-            return [true, sessionid];
+            return [true, 200, sessionid];
         }
 
-        return [true, ''];
+        return [true, 200, ''];
     }
 
-    static remove(username: string, authtoken:string) {
-        if (!DB.records[username]) return [false, 'user not found or password is incorrect'];
-        if (DB.session[authtoken][0] !== 'admin') return [false, 'operation requires special permission'];
-        if (DB.session[authtoken][1] === username) return [false, 'you cannot remove yourself'];
+    static remove(username: string, authtoken: string): any[] {
+        if (!DB.records[username]) return [false, 401, 'user not found or password is incorrect'];
+        if (DB.session[authtoken][0] !== 'admin') return [false, 403, 'operation requires special permission'];
+        if (DB.session[authtoken][1] === username) return [false, 500, 'you cannot remove yourself'];
 
         delete DB.records[username];
         fs.writeFile(__dirname + '/users.json', JSON.stringify(DB.records, null, 3), (err: NodeJS.ErrnoException) => {
             console.error('remove', err);
         });
 
-        return [true, ''];
+        return [true, 200, ''];
     }
 
-    static getsingle(authtoken: string) {       
+    static getsingle(authtoken: string): any[] {       
         var user = DB.session[authtoken][1];
         var record = DB.records[user];
-        if (!record) return [false, 'user not found or password is incorrect'];
+        if (!record) return [false, 401, 'user not found or password is incorrect'];
 
         var record2 = _.omit(record, ['password', 'salt']);
-        return [true, record2];
+        return [true, 200, record2];
     }
 
-    static getall(authtoken: string) {
-        if (DB.session[authtoken][0] !== 'admin') return [false, <any>'operation requires special permission'];
+    static getall(authtoken: string): any[] {
+        if (DB.session[authtoken][0] !== 'admin') return [false, 403, <any>'operation requires special permission'];
 
         var res = _.map(DB.records, (itm:any, key) => {
             itm = _.omit(itm, ['password', 'salt']);
             return itm;
         });
 
-        return [true, res];
+        return [true, 200, res];
     }
 
-    static update(record: Record, authtoken: string) {
-        if (!DB.records[record.username]) return [false, 'user not found or password is incorrect'];
-        if (DB.session[authtoken][0] !== 'admin' && DB.session[authtoken][1] !== record.username) return [false, 'operation requires special permission'];
+    static update(record: Record, authtoken: string): any[] {
+        if (!DB.records[record.username]) return [false, 401, 'user not found or password is incorrect'];
+        if (DB.session[authtoken][0] !== 'admin' && DB.session[authtoken][1] !== record.username) return [false, 403, 'operation requires special permission'];
 
         if (record.password) {
             var salt = DB.random();
@@ -191,6 +191,6 @@ export class DB {
             console.error('update', err);
         });
 
-        return [true, ''];
+        return [true, 200, ''];
     }
 }

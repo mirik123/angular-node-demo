@@ -6,10 +6,10 @@ var router = express.Router();
 router.get('/', function (req: express.Request, res: express.Response) {
     var dbres = DB.DB.getall(res.locals.authtoken);
     if (!dbres[0]) {
-        res.status(500).json({ error: dbres[1] });
+        res.status(dbres[1]).json({ error: dbres[2] });
     }
     else {
-        res.status(200).json(dbres[1]);
+        res.status(dbres[1]).json(dbres[2]);
     }
 });
  
@@ -27,10 +27,10 @@ router.post('/', function (req: express.Request, res: express.Response) {
 
     var dbres = DB.DB.update(req.body, res.locals.authtoken);
     if (!dbres[0]) {
-        res.status(500).json({ error: dbres[1] });
+        res.status(dbres[1]).json({ error: dbres[2] });
     }
     else {
-        res.status(200).end();
+        res.sendStatus(dbres[1]);
     }
 });
 
@@ -49,10 +49,10 @@ router.put('/', function (req: express.Request, res: express.Response) {
 
     var dbres = DB.DB.add(req.body, res.locals.authtoken);
     if (!dbres[0]) {
-        res.status(500).json({ error: dbres[1] });
+        res.status(dbres[1]).json({ error: dbres[2] });
     }
     else {
-        res.status(200).end();
+        res.sendStatus(dbres[1]);
     }
 });
 
@@ -64,10 +64,10 @@ router.delete('/:username', function (req: express.Request, res: express.Respons
 
     var dbres = DB.DB.remove(req.params.username, res.locals.authtoken);
     if (!dbres[0]) {
-        res.status(500).json({ error: dbres[1] });
+        res.status(dbres[1]).json({ error: dbres[2] });
     }
     else {
-        res.status(200).end();
+        res.sendStatus(dbres[1]);
     }
 });
 

@@ -31,6 +31,11 @@ export class loginCtrl {
         var base64creds = this.appService.encodecreds(this.loginmodel.username, this.loginmodel.password);
         this.appService.http('/api/login', 'POST', { 'Authorization': 'Basic ' + base64creds })
             .then((dt) => {
+                if (!dt.data) {
+                    this.httpError = 'incorrect request';
+                    return;
+                }
+
                 this.appService.permissions = dt.data.permissions;
                 this.appService.authtoken = dt.data.authtoken;
                 this.appService.username = this.loginmodel.username;

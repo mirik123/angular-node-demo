@@ -16,15 +16,18 @@ router.post('/', function (req: express.Request, res: express.Response) {
 
     var dbres = DB.DB.login(req.body.username, req.body.password, req.ip);
     if (!dbres[0]) {
-        res.status(500).json({ error: dbres[1] });
+        res.status(dbres[1]).json({ error: dbres[2] });
     }
     else {
-        var validate = DB.DB.validate(<string>dbres[1]);
+        var validate = DB.DB.validate(dbres[2]);
         if (!validate[0]) {
-            res.status(500).json({ error: validate[1] });
+            res.status(validate[1]).json({ error: validate[2] });
         }
         else {
-            res.status(200).json({ authtoken: dbres[1], permissions: validate[1][0] });
+            //res.redirect(303, '/api/users');
+            //res.status(303).set('Location', '/api/users');
+
+            res.status(validate[1]).json({ authtoken: dbres[2], permissions: validate[2][0] });
         }
     }
 });

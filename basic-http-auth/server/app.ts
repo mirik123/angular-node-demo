@@ -5,7 +5,8 @@ import http = require('http');
 import path = require('path');
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
-var session = require('express-session');
+//var cookieParser = require('cookie-parser');
+//var session = require('express-session');
 var morgan = require('morgan');
 
 var fs = require('fs');
@@ -20,13 +21,20 @@ app.use(morgan('combined'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(__dirname + '/../wwwroot'));
+//app.use(cookieParser());
+/*app.use(session({
+    secret: '123456',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+}));*/
 
 // development only
-/*app.use(function (err, req: express.Request, res: express.Response, next) {
+app.use(function (err, req: express.Request, res: express.Response, next) {
 	console.error(err.stack);
-	res.status(500).json({ error: err.message });
+	res.status(500).json({ error: 'unknown error' });
 	res.end();
-});*/
+});
 
 app.use(function (req: express.Request, res: express.Response, next) {
     console.log(req.method + ' ' + req.url);
@@ -39,17 +47,10 @@ app.use(function (req: express.Request, res: express.Response, next) {
         res.set('Access-Control-Allow-Credentials', 'true');
 		
         res.sendStatus(200);
-		res.end();
 		return;
 	}
 
 	next();
-});
-
-app.use('/api/logout', function (req: express.Request, res: express.Response) {
-    DB.DB.logout(res.locals.authtoken);
-    res.sendStatus(200);
-    res.end();
 });
 
 app.use(function (req: express.Request, res: express.Response, next) {
@@ -60,9 +61,12 @@ app.use(function (req: express.Request, res: express.Response, next) {
 		
 	var auth = req.header('Authorization');
 	if (!auth || auth.indexOf('Basic ') !== 0 && auth.indexOf('Bearer ') !== 0) {
-		//next(new Error('authorization required'));
-        res.status(500).json({ error: 'authorization required' });
-        res.end();
+        if (req.url !== '/api/logout') {
+            res.status(401).json({ error: 'authorization required' });
+        }
+        else {
+            res.sendStatus(200);
+        }
 	}
     else if (auth.indexOf('Basic ') === 0) {
 		var encoded = auth.substring(6);
@@ -77,16 +81,24 @@ app.use(function (req: express.Request, res: express.Response, next) {
 		var authtoken = auth.substring(7);
 		res.locals.authtoken = authtoken;
 		var validate = DB.DB.validate(authtoken);
-		if (!validate[0]) {
-			//next(new Error('authorization required'));
-            res.status(500).json({ error: 'authorization required' });
-            res.end();
+        if (!validate[0]) {
+            if (req.url !== '/api/logout') {
+                res.status(401).json({ error: 'authorization required' });
+            }
+            else {
+                res.sendStatus(200);
+            }
 		}
 		else {
 			res.locals.session = validate[1];
 			next();
 		}
-	}
+    }
+});
+
+app.use('/api/logout', function (req: express.Request, res: express.Response) {
+    DB.DB.logout(res.locals.authtoken);
+    res.sendStatus(200);
 });
 
 app.use('/api/login', require('./routes/login'));
