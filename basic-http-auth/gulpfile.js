@@ -88,7 +88,7 @@ gulp.task('server-express', ['build', 'script-express'], function () {
     //livereload.listen();
 
     nodemon({
-        script: 'wwwroot/app-express.js',
+        script: 'wwwroot/server/app-express.js',
         watch: livereloadGlobs,
         vebose: true
     //...add nodeArgs: ['--debug=5858'] to debug 
@@ -113,6 +113,9 @@ gulp.task('watch-express', ['server-express'], function () {
 });
 
 gulp.task('script-express', function () {
+    gulp.src('./server/db/users.json')
+        .pipe(gulp.dest('wwwroot/server'));
+
     var dev = browserify('./server/app.ts', {
             debug: true,
             browserField: false,
@@ -136,7 +139,7 @@ gulp.task('script-express', function () {
               .pipe(gif(isrelease, uglify({ compress: { drop_console: true } })))
               .pipe(gif(!isrelease, sourcemaps.write('./')))
               .pipe(debug({ title: 'script:' }))
-              .pipe(gulp.dest('wwwroot'));
+              .pipe(gulp.dest('wwwroot/server'));
 
     return dev;
 });

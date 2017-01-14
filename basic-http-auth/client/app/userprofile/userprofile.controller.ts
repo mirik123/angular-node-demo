@@ -4,7 +4,7 @@ export class userprofileCtrl {
     $state: ng.ui.IStateService;
     appService: IAppService;
     $mdDialog: ng.material.IDialogService;
-    httpError = {};
+    httpError = null;
     maxDate: Date;
     profilemodel = {
         username: '',

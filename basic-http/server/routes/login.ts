@@ -9,7 +9,7 @@ router.post('/', function (req: express.Request, res: express.Response) {
         return;
     }
 
-    if (req.body.username.length > 16 || req.body.password.length > 16) {
+    if (req.body.username.length > 32 || req.body.password.length > 32) {
         res.status(500).json({ error: 'user or password are too long' });
         return;
     }
@@ -19,7 +19,7 @@ router.post('/', function (req: express.Request, res: express.Response) {
         res.status(500).json({ error: dbres[1] });
     }
     else {
-        var validate = DB.DB.validate(dbres[1]);
+        var validate = DB.DB.validate(<string>dbres[1]);
         if (!validate[0]) {
             res.status(500).json({ error: validate[1] });
         }

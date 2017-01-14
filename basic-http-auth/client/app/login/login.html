@@ -10,21 +10,21 @@
                 <div flex layout="row">
                     <md-input-container class="md-block">
                         <label>Username </label>
-                        <input name="username" ng-model="vm.loginmodel.username" required maxlength="16" />
+                        <input name="username" ng-model="vm.loginmodel.username" required maxlength="32" />
                         <div ng-messages="loginform.username.$error" role="alert" multiple md-auto-hide="false">
                             <div ng-messages-include="error-messages"></div>
                         </div>
                     </md-input-container>
                     <md-input-container class="md-block">
                         <label>Password</label>
-                        <input name="userpass" ng-model="vm.loginmodel.password" type="password" required maxlength="16" minlength="2" />
+                        <input name="userpass" ng-model="vm.loginmodel.password" type="password" required maxlength="32" minlength="2" />
                         <div ng-messages="loginform.userpass.$error" role="alert" multiple md-auto-hide="false">
                             <div ng-messages-include="error-messages"></div>
                         </div>
                     </md-input-container>
                 </div>
-                <div ng-messages="{error: !!vm.httpError.error}" role="alert">
-                    <div ng-message="error">{{vm.httpError.error}}</div>
+                <div ng-messages="{error: !!vm.httpError}" role="alert">
+                    <div ng-message="error">{{vm.httpError.error || vm.httpError}}</div>
                 </div>
             </md-card-content>
             <md-card-actions layout="row" style="margin-top:0" layout-align="space-between center">

@@ -12,16 +12,16 @@ export class sidenavDd implements ng.IComponentOptions {
     bindings = {
         options: '=',
     };
-    template = `<h1>{{vm.options.value}}</h1>`;
+    template = `<h1>{{vm.options}}</h1>`;
 }
 
 class sidenavDdCtrl {
     static $inject = ['$scope', '$element', '$attrs'];
-    constructor($scope, $element, $attrs) {
+    constructor($scope, $element, $attrs) { 
         $scope.title = 'DIRECTIVE';
     }
 
-    $onInit() {
+    $onInit() { 
 
     }
 

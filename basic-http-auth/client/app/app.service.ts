@@ -6,10 +6,9 @@ export class appService implements IAppService {
 
     public title: any;
     public username: string = '';
-    public password: string = '';
     public authtoken: string = '';
     public permissions: string = '';
-    public host: string = 'http://localhost:3000';
+    public host: string = 'https://localhost:8443';  //'http://localhost:8080';
 
     static $inject = ['$http', '$rootScope'];
     constructor($http, $rootScope) {

@@ -1,10 +1,9 @@
 ﻿
 export class loginCtrl {
     title: string;
-    testdt: Date;
     $state: ng.ui.IStateService;
     appService: IAppService;
-    httpError = {};
+    httpError = null;
     loginmodel = {
         username: '',
         password: ''
@@ -25,7 +24,6 @@ export class loginCtrl {
                 this.appService.permissions = dt.data.permissions;
                 this.appService.authtoken = dt.data.authtoken;
                 this.appService.username = this.loginmodel.username;
-                this.appService.password = this.loginmodel.password;
                 this.$state.go('sidenav');
             },
             (dt) => {
@@ -33,7 +31,6 @@ export class loginCtrl {
                 this.appService.permissions = '';
                 this.appService.authtoken = '';
                 this.appService.username = '';
-                this.appService.password = '';
                 console.error('login error', dt.data);
             });
     }

@@ -7,25 +7,26 @@ export class usermngCtrl {
     $mdDialog: ng.material.IDialogService;
     appService: IAppService;
     editmode: boolean;
-    httpError = {};
+    httpError = null;
     maxDate: Date;
 
     tabledata = {
         table: [],
         filtered: [],
         selected: null,
+        selectedcopy: null,
         get count() {
             return this.filtered.length;
         },
         order: 'username',
         limit: 3,
         page: 1,
-        limitoptions: [3, 10, 50, {
+        limitoptions: [3, 10, 50/*, {
             label: 'All',
             value: () => {
                 return this.tabledata.filtered.length;
             }
-        }]
+        }*/]
     };
 
     searchform = {
@@ -101,15 +102,16 @@ export class usermngCtrl {
                 this.httpError = null;
 
                 _.each(this.tabledata.table, itm => { itm.birthdate = moment.utc(itm.birthdate).toDate(); });
+
+                this.tabledata.selected = null;
+                this.tabledata.selectedcopy = null;
+                this.tabledata.page = 1;
+                this.resetfilters();
             },
             (dt) => {
                 this.httpError = dt.data;
                 console.error('failed to load users data', dt.data);
             });
-
-        this.tabledata.page = 1;
-
-        this.resetfilters();
     }
 
     save(row) {        
@@ -120,7 +122,10 @@ export class usermngCtrl {
             this.appService.http('/api/users', 'PUT', {}, row)
                 .then((dt) => {
                     this.httpError = null;
+
+                    delete this.tabledata.selected.newrecord;
                     this.tabledata.selected = null;
+                    this.tabledata.selectedcopy = null;
                     console.log('created new users data', dt.data);
                 },
                 (dt) => {
@@ -133,6 +138,7 @@ export class usermngCtrl {
                 .then((dt) => {
                     this.httpError = null;
                     this.tabledata.selected = null;
+                    this.tabledata.selectedcopy = null;
                     console.log('saved users data', dt.data);
                 },
                 (dt) => {
@@ -147,6 +153,7 @@ export class usermngCtrl {
             .then((dt) => {
                 this.httpError = null;
                 this.tabledata.selected = null;
+                this.tabledata.selectedcopy = null;
                 console.log('deleted users data', dt.data);
                 _.remove(this.tabledata.table, { username: row.username });
             },
@@ -162,27 +169,29 @@ export class usermngCtrl {
             email: '',
             username: '',
             password: '',
-            birthdate: null
+            birthdate: null,
+            newrecord: true
         };
 
         this.tabledata.table.unshift(itm);
 
         this.tabledata.page = 1;
-        this.tabledata.selected = _.clone(itm);
-        this.tabledata.selected.newrecord = true;
+        this.tabledata.selected = itm;
+        this.tabledata.selectedcopy = null;
     }
 
     undo() {
         if (this.tabledata.selected) {
             if (this.tabledata.selected.newrecord) {
-                _.remove(this.tabledata.table, { username: this.tabledata.selected.username });
+                this.tabledata.table.splice(this.tabledata.table.indexOf(this.tabledata.selected), 1);
             }
             else {
-                var row = _.find(this.tabledata.table, { username: this.tabledata.selected.username });
-                if (row) _.assign(row, this.tabledata.selected);
+                var row = _.find(this.tabledata.table, { username: this.tabledata.selectedcopy.username });
+                if (row) _.assign(row, this.tabledata.selectedcopy);
             }
 
             this.tabledata.selected = null;
+            this.tabledata.selectedcopy = null;
         }
     }
 
@@ -191,6 +200,7 @@ export class usermngCtrl {
             this.undo();
         }
 
-        this.tabledata.selected = _.clone(row);
+        this.tabledata.selected = row;
+        this.tabledata.selectedcopy = _.cloneDeep(row);
     }
 }

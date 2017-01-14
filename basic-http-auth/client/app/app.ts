@@ -3,7 +3,6 @@
 interface IAppService {
     title: {value:string};
     username: string;
-    password: string;
     authtoken: string;
     permissions: string;
     host: string;
@@ -12,7 +11,7 @@ interface IAppService {
 }
 
 
-var app = angular.module('app', ['app.templates', 'ngAria', 'ngMaterial', 'ngMdIcons', 'ngMessages', "ui.router", "ngAnimate", 'md.data.table']);
+var app = angular.module('app', ['app.templates', 'ngAria', 'ngMaterial', 'ngMdIcons', 'ngMessages', "ui.router", "ngAnimate", 'md.data.table', 'ngCookies']);
 
 app.run(['$rootScope', 'appService', '$state', function ($rootScope, appService, $state) {
     $rootScope._ = window._;

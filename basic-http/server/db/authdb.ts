@@ -1,15 +1,36 @@
 ﻿import fs = require('fs');
-var _ = require("lodash");
-var uuid = require('node-uuid');
+import _ = require("lodash");
+import crypto = require('crypto');
+
+class BaseRecord {
+    loginsuccesson?: string;
+    loginfailureon?: string;
+    failedlogins?: number;
+    updatedon?: string;
+    createdon?: string;    
+    loginip?: string;   
+}
+
+class Record extends BaseRecord {
+    username: string;
+    email: string;
+    birthdate: string;
+    permissions: string;  
+    password: string;
+}
 
 export class DB {
     static records = require('./users.json');
     static session = {};
 
+    static random() {
+        return crypto.randomBytes(32).toString('hex');
+    }
+
     static login(username: string, pass: string, ip:string) {
         var record = DB.records[username];
         if (record && record.password === pass) {
-            var sessionid = uuid.v4();
+            var sessionid = DB.random();
             DB.session[sessionid] = [record.permissions, username, ip];
 
             record.loginsuccesson = new Date().toISOString();
@@ -41,11 +62,12 @@ export class DB {
         return !authtoken || !DB.session[authtoken] ? [false, 'session is invalid'] : [true, DB.session[authtoken]];
     }
 
-    static add(record, authtoken: string) {
+    static add(record:Record, authtoken: string) {
         if (DB.records[record.username]) return [false, 'user already exists'];
         if (authtoken && DB.session[authtoken][0] !== 'admin') return [false, 'operation requires special permission'];
 
         DB.records[record.username] = {
+            username: record.username,
             password: record.password,
             permissions: record.permissions,
             email: record.email,
@@ -65,7 +87,7 @@ export class DB {
         });
 
         if (!authtoken) {
-            var sessionid = uuid.v4();
+            var sessionid = DB.random();
             DB.session[sessionid] = ['user', record.username, record.loginip];
             return [true, sessionid];
         }
@@ -96,18 +118,17 @@ export class DB {
     }
 
     static getall(authtoken: string) {
-        if (DB.session[authtoken][0] !== 'admin') return [false, 'operation requires special permission'];
+        if (DB.session[authtoken][0] !== 'admin') return [false, <any>'operation requires special permission'];
 
         var res = _.map(DB.records, (itm, key) => {
             itm = _.omit(itm, 'password');
-            itm.username = key;
             return itm;
         });
 
         return [true, res];
     }
 
-    static update(record, authtoken: string) {
+    static update(record: Record, authtoken: string) {
         if (!DB.records[record.username]) return [false, 'user not found or password is incorrect'];
         if (DB.session[authtoken][0] !== 'admin' && DB.session[authtoken][1] !== record.username) return [false, 'operation requires special permission'];
 

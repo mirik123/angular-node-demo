@@ -21,17 +21,23 @@ class Record extends BaseRecord {
 }
 
 export class DB {
-    static records: { [id: string]: Record; } = require('./users.json');
+    static records: { [id: string]: Record; };
     static session = {};
 
+    static init() {
+        DB.records = {};
+
+        fs.readFile(__dirname + '/users.json', 'utf8', (err: NodeJS.ErrnoException, data: string) => {
+            DB.records = JSON.parse(data);
+        });
+    }
+
     static hash(password: string, salt: string) {
-        return crypto.createHmac('sha256', salt)
-            .update(password)
-            .digest('hex'); 
+        return crypto.pbkdf2Sync(password, salt, 1000, 32, 'sha1').toString('hex');
     }
 
     static random() {
-        return crypto.randomBytes(8).toString('hex');
+        return crypto.randomBytes(32).toString('hex');
     }
 
     static seed() {

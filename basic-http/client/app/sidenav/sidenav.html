@@ -1,7 +1,7 @@
 ﻿
 
 <div flex layout="column" layout-fill>
-    <sidenav-dd flex="1" style="text-align:center" options="vm.title"></sidenav-dd>
+    <sidenav-dd flex="1" style="text-align:center" options="vm.appService.title.value ? vm.appService.username + ' - ' + vm.appService.title.value : ''"></sidenav-dd>
     <div flex="99" layout="row"  layout-fill>
         <md-sidenav class="md-sidenav-left" md-component-id="left" md-is-locked-open="true">
             <md-list>

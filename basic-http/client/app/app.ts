@@ -3,7 +3,6 @@
 interface IAppService {
     title: {value:string};
     username: string;
-    password: string;
     authtoken: string;
     permissions: string;
     host: string;

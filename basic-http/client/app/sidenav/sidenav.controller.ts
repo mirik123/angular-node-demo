@@ -1,6 +1,8 @@
 ﻿
 export class sidenavCtrl {
-    title: any;
+    get title() {
+        return this.appService.title.value ? this.appService.username + ' - ' + this.appService.title.value : '';
+    };
     appService: IAppService;
     $state: ng.ui.IStateService;
     $stateParams: ng.ui.IStateParamsService;
@@ -10,7 +12,6 @@ export class sidenavCtrl {
         this.$state = $state;
         this.$stateParams = $stateParams;
         this.appService = appService;
-        this.title = appService.title;
     }
 
     selectTab(target: string) {
@@ -22,7 +23,7 @@ export class sidenavCtrl {
         this.appService.permissions = '';
         this.appService.authtoken = '';
         this.appService.username = '';
-        this.appService.password = '';
+        this.appService.title.value = '';
 
         this.selectTab('login');
     }

@@ -19,8 +19,8 @@ router.post('/', function (req: express.Request, res: express.Response) {
         return;
     }
 
-    if (req.body.username.length > 16 || req.body.permissions && req.body.permissions.length > 16 ||
-        req.body.birthdate.length > 32 || req.body.email.length > 16 || req.body.password && req.body.password.length > 16) {
+    if (req.body.username.length > 32 || req.body.permissions && req.body.permissions.length > 32 ||
+        req.body.birthdate.length > 32 || req.body.email.length > 32 || req.body.password && req.body.password.length > 32) {
         res.status(500).json({ error: 'required parameters are too long' });
         return;
     }
@@ -41,8 +41,8 @@ router.put('/', function (req: express.Request, res: express.Response) {
         return;
     }
 
-    if (req.body.username.length > 16 || req.body.permissions && req.body.permissions.length > 16 ||
-        req.body.birthdate.length > 32 || req.body.email.length > 16 || req.body.password && req.body.password.length > 16) {
+    if (req.body.username.length > 32 || req.body.permissions && req.body.permissions.length > 32 ||
+        req.body.birthdate.length > 32 || req.body.email.length > 32 || req.body.password && req.body.password.length > 32) {
         res.status(500).json({ error: 'required parameters are too long' });
         return;
     }

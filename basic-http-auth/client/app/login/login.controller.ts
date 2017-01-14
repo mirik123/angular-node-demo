@@ -1,21 +1,30 @@
 ﻿
 export class loginCtrl {
     title: string;
-    testdt: Date;
     $state: ng.ui.IStateService;
+    $cookies: ng.cookies.ICookiesService;
     appService: IAppService;
-    httpError = {};
+    httpError = null;
     loginmodel = {
         username: '',
         password: ''
     };
 
-    static $inject = ['$state', 'appService'];
-    constructor($state: ng.ui.IStateService, appService: IAppService) {
+    static $inject = ['$state', 'appService', '$cookies'];
+    constructor($state: ng.ui.IStateService, appService: IAppService, $cookies: ng.cookies.ICookiesService) {
         this.$state = $state;
         this.appService = appService;
+        this.$cookies = $cookies;
         
         this.title = 'LOGIN';
+
+        var authtoken = $cookies.getObject('angular-demo-authtoken');
+        if (authtoken) {
+            this.appService.permissions = authtoken.permissions;
+            this.appService.authtoken = authtoken.authtoken;
+            this.appService.username = authtoken.username;
+            this.$state.go('sidenav');
+        }
     }
 
     login() {
@@ -25,7 +34,12 @@ export class loginCtrl {
                 this.appService.permissions = dt.data.permissions;
                 this.appService.authtoken = dt.data.authtoken;
                 this.appService.username = this.loginmodel.username;
-                this.appService.password = this.loginmodel.password;
+                this.$cookies.putObject('angular-demo-authtoken', {
+                    permissions: this.appService.permissions,
+                    authtoken: this.appService.authtoken,
+                    username: this.appService.username
+                });
+
                 this.$state.go('sidenav');
             },
             (dt) => {
@@ -33,7 +47,8 @@ export class loginCtrl {
                 this.appService.permissions = '';
                 this.appService.authtoken = '';
                 this.appService.username = '';
-                this.appService.password = '';
+                this.$cookies.remove('angular-demo-authtoken');
+
                 console.error('login error', dt.data);
             });
     }
