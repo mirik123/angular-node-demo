@@ -10,7 +10,7 @@ var favicon = require('serve-favicon');
 var morgan = require('morgan');
 
 var fs = require('fs');
-import DB = require('./db/authdb');
+import Utils = require('./utils');
 
 var app = express();
 
@@ -80,7 +80,7 @@ app.use(function (req: express.Request, res: express.Response, next) {
 	else {
 		var authtoken = auth.substring(7);
 		res.locals.authtoken = authtoken;
-		var validate = DB.DB.validate(authtoken);
+        var validate = Utils.Utils.validate(authtoken);
         if (!validate[0]) {
             if (req.url !== '/api/logout') {
                 res.status(401).json({ error: 'authorization required' });
@@ -97,7 +97,7 @@ app.use(function (req: express.Request, res: express.Response, next) {
 });
 
 app.use('/api/logout', function (req: express.Request, res: express.Response) {
-    DB.DB.logout(res.locals.authtoken);
+    Utils.Utils.logout(res.locals.authtoken);
     res.sendStatus(200);
 });
 
@@ -107,8 +107,8 @@ app.use('/api/users', require('./routes/users'));
 
 http.createServer(app).listen(8080, function () {
     console.log('Express server listening on port 8080 and folder: ' + __dirname + '/../wwwroot');
-    DB.DB.init();
-    //DB.DB.seed(); //development only
+    Utils.Utils.init();
+    //Utils.Utils.seed(); //development only
 });
 
 //https://matoski.com/article/node-express-generate-ssl/
@@ -128,6 +128,6 @@ https.createServer({
 	rejectUnauthorized: false
 }, app).listen(8443, function () {
     console.log("Secure Express server listening on port 8443");
-    DB.DB.init();
-    //DB.DB.seed(); //development only
+    Utils.Utils.init();
+    //Utils.Utils.seed(); //development only
 });

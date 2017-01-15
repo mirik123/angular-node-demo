@@ -1,5 +1,5 @@
 ﻿
-import DB = require('../db/authdb');
+import Utils = require('../utils');
 import express = require('express');
 var router = express.Router();
 
@@ -14,12 +14,12 @@ router.post('/', function (req: express.Request, res: express.Response) {
         return;
     }
 
-    var dbres = DB.DB.login(req.body.username, req.body.password, req.ip);
+    var dbres = Utils.Utils.login(req.body.username, req.body.password, req.ip);
     if (!dbres[0]) {
         res.status(dbres[1]).json({ error: dbres[2] });
     }
     else {
-        var validate = DB.DB.validate(dbres[2]);
+        var validate = Utils.Utils.validate(dbres[2]);
         if (!validate[0]) {
             res.status(validate[1]).json({ error: validate[2] });
         }

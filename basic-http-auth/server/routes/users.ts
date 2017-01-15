@@ -1,10 +1,10 @@
 ﻿
-import DB = require('../db/authdb');
+import Utils = require('../utils');
 import express = require('express');
 var router = express.Router();
 
 router.get('/', function (req: express.Request, res: express.Response) {
-    var dbres = DB.DB.getall(res.locals.authtoken);
+    var dbres = Utils.Utils.getall(res.locals.authtoken);
     if (!dbres[0]) {
         res.status(dbres[1]).json({ error: dbres[2] });
     }
@@ -25,7 +25,7 @@ router.post('/', function (req: express.Request, res: express.Response) {
         return;
     }
 
-    var dbres = DB.DB.update(req.body, res.locals.authtoken);
+    var dbres = Utils.Utils.update(req.body, res.locals.authtoken);
     if (!dbres[0]) {
         res.status(dbres[1]).json({ error: dbres[2] });
     }
@@ -47,7 +47,7 @@ router.put('/', function (req: express.Request, res: express.Response) {
         return;
     }
 
-    var dbres = DB.DB.add(req.body, res.locals.authtoken);
+    var dbres = Utils.Utils.add(req.body, res.locals.authtoken);
     if (!dbres[0]) {
         res.status(dbres[1]).json({ error: dbres[2] });
     }
@@ -62,7 +62,7 @@ router.delete('/:username', function (req: express.Request, res: express.Respons
         return;
     }
 
-    var dbres = DB.DB.remove(req.params.username, res.locals.authtoken);
+    var dbres = Utils.Utils.remove(req.params.username, res.locals.authtoken);
     if (!dbres[0]) {
         res.status(dbres[1]).json({ error: dbres[2] });
     }
