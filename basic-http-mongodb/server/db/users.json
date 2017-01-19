@@ -1,0 +1,37 @@
+{
+   "admin": {
+      "username": "admin",
+      "email": "admin@com",
+      "birthdate": "2017-01-13T13:02:30.976Z",
+      "permissions": "admin",
+      "salt": "3e7a67247b822d9892054d2b4870b4ff3dd544ee7cb2731211f99ec1f81d0a5a",
+      "password": "bb7bce07587ab4b4b212204ff8bd0fa7afdf56f548c793c82fdfb3796fd25ff9",
+      "loginsuccesson": "2017-01-14T19:57:31.565Z",
+      "failedlogins": 0,
+      "loginip": "::1"
+   },
+   "user": {
+      "username": "user",
+      "password": "b415dd2a909b10901a1b0f068ff089442295432346d200eea1ef001968454e78",
+      "salt": "571408629c3e85f583b518add071696ed1f4263b9d14920854ab2f578b82a284",
+      "permissions": "user",
+      "email": "user222@com",
+      "birthdate": "2016-12-31T22:00:00Z",
+      "createdon": "2017-01-13T15:21:41.599Z",
+      "updatedon": "2017-01-14T19:50:37.616Z",
+      "failedlogins": 0,
+      "loginsuccesson": "2017-01-13T15:31:21.239Z",
+      "loginip": "::1"
+   },
+   "user2": {
+      "username": "user2",
+      "password": "094b9a82a29127441cdd04bfdbc967ac36b0b2840033f4f6a33a582eff74d20b",
+      "salt": "16cd83020e4f15373986fdfe578461f7faa60b049b2c371205756114e55847a7",
+      "permissions": "user",
+      "email": "u2@com",
+      "birthdate": "2016-11-05T22:00:00Z",
+      "createdon": "2017-01-13T17:13:34.927Z",
+      "updatedon": "2017-01-13T17:13:34.927Z",
+      "failedlogins": 0
+   }
+}

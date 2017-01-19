@@ -47,6 +47,10 @@ export class DB {
     static remove(username: string) {
         delete DB.records[username];
     }
+
+    static removeall() {
+        DB.records = {};
+    }
     
     static findall(): any {
         return DB.records;
