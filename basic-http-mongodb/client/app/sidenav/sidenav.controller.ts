@@ -14,6 +14,11 @@ export class sidenavCtrl {
         this.$stateParams = $stateParams;
         this.appService = appService;
         this.$cookies = $cookies; 
+
+        this.appService.http('/api/dummy', 'POST')
+            .catch(dt => {
+                if (dt.data.status === 401) this.logout();
+            });
     }
 
     selectTab(target: string) {

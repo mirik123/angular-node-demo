@@ -10,17 +10,17 @@ var favicon = require('serve-favicon');
 var morgan = require('morgan');
 
 var fs = require('fs');
-import Utils = require('./utils');
+import { Utils } from './utils';
 
 var app = express();
 
-// all environments
+// all environments 
 //app.set('port', process.env.PORT || 3000);
-app.use(favicon(__dirname + '/../wwwroot/assets/icons/favicon.ico'));
+app.use(favicon(__dirname + '/../../wwwroot/assets/icons/favicon.ico'));
 app.use(morgan('combined'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(express.static(__dirname + '/../wwwroot'));
+app.use(express.static(__dirname + '/../../wwwroot'));
 //app.use(cookieParser());
 /*app.use(session({
     secret: '123456',
@@ -29,12 +29,6 @@ app.use(express.static(__dirname + '/../wwwroot'));
     cookie: { secure: true }
 }));*/
 
-// development only
-app.use(function (err, req: express.Request, res: express.Response, next) {
-	console.error(err.stack);
-	res.status(500).json({ error: 'unknown error' });
-	res.end();
-});
 
 app.use(function (req: express.Request, res: express.Response, next) {
     console.log(req.method + ' ' + req.url);
@@ -80,8 +74,8 @@ app.use(function (req: express.Request, res: express.Response, next) {
 	else {
 		var authtoken = auth.substring(7);
 		res.locals.authtoken = authtoken;
-        var validate = Utils.Utils.validate(authtoken);
-        if (!validate[0]) {
+        var validate = Utils.validate(authtoken);
+        if (validate[0] !== 200) {
             if (req.url !== '/api/logout') {
                 res.status(401).json({ error: 'authorization required' });
             }
@@ -97,7 +91,7 @@ app.use(function (req: express.Request, res: express.Response, next) {
 });
 
 app.use('/api/logout', function (req: express.Request, res: express.Response) {
-    Utils.Utils.logout(res.locals.authtoken);
+    Utils.logout(res.locals.authtoken);
     res.sendStatus(200);
 });
 
@@ -105,10 +99,16 @@ app.use('/api/login', require('./routes/login'));
 app.use('/api/profile', require('./routes/profile'));
 app.use('/api/users', require('./routes/users'));
 
+// development only
+app.use(function (err, req: express.Request, res: express.Response, next) {
+    console.error(err.stack);
+    res.status(500).json({ error: 'unknown error' });
+    res.end();
+});
+
 http.createServer(app).listen(8080, function () {
     console.log('Express server listening on port 8080 and folder: ' + __dirname + '/../wwwroot');
-    Utils.Utils.init();
-    //Utils.Utils.seed(); //development only
+    Utils.init();
 });
 
 //https://matoski.com/article/node-express-generate-ssl/
@@ -120,7 +120,7 @@ http.createServer(app).listen(8080, function () {
 //cp server.key server.key.passphrase
 //openssl rsa -in server.key.passphrase -out server.key
 //openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
-https.createServer({
+/*https.createServer({
 	key: fs.readFileSync(__dirname + '/sslcert/server.key'),
 	cert: fs.readFileSync(__dirname + '/sslcert/server.crt'),
 	ca: fs.readFileSync(__dirname + '/sslcert/ca.crt'),
@@ -129,5 +129,4 @@ https.createServer({
 }, app).listen(8443, function () {
     console.log("Secure Express server listening on port 8443");
     Utils.Utils.init();
-    //Utils.Utils.seed(); //development only
-});
+});*/

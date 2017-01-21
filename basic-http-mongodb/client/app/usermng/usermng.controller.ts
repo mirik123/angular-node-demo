@@ -96,7 +96,7 @@ export class usermngCtrl {
     reload() {
         this.tabledata.table.length = 0;
         this.appService.http('/api/users', 'GET')
-            .then((dt) => {
+            .then(dt => {
                 console.log('loaded users data', dt.data);
                 this.tabledata.table = dt.data;
                 this.httpError = null;
@@ -108,7 +108,7 @@ export class usermngCtrl {
                 this.tabledata.page = 1;
                 this.resetfilters();
             },
-            (dt) => {
+            dt => {
                 this.httpError = dt.data;
                 console.error('failed to load users data', dt.data);
             });
@@ -120,7 +120,7 @@ export class usermngCtrl {
 
         if (this.tabledata.selected.newrecord) {
             this.appService.http('/api/users', 'PUT', {}, row)
-                .then((dt) => {
+                .then(dt => {
                     this.httpError = null;
 
                     delete this.tabledata.selected.newrecord;
@@ -128,20 +128,20 @@ export class usermngCtrl {
                     this.tabledata.selectedcopy = null;
                     console.log('created new users data', dt.data);
                 },
-                (dt) => {
+                dt => {
                     this.httpError = dt.data;
                     console.error('failed to create new users data', dt.data);
                 });
         }
         else {
             this.appService.http('/api/users', 'POST', {}, row)
-                .then((dt) => {
+                .then(dt => {
                     this.httpError = null;
                     this.tabledata.selected = null;
                     this.tabledata.selectedcopy = null;
                     console.log('saved users data', dt.data);
                 },
-                (dt) => {
+                dt => {
                     this.httpError = dt.data;
                     console.error('failed to save users data', dt.data);
                 });
@@ -150,14 +150,14 @@ export class usermngCtrl {
 
     remove(row) {
         this.appService.http('/api/users/' + row.username, 'DELETE')
-            .then((dt) => {
+            .then(dt => {
                 this.httpError = null;
                 this.tabledata.selected = null;
                 this.tabledata.selectedcopy = null;
                 console.log('deleted users data', dt.data);
                 _.remove(this.tabledata.table, { username: row.username });
             },
-            (dt) => {
+            dt => {
                 this.httpError = dt.data;
                 console.error('failed to delete users data', dt.data);
             });

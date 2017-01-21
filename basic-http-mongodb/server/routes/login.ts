@@ -1,5 +1,5 @@
 ﻿
-import Utils = require('../utils');
+import { Utils } from '../utils';
 import express = require('express');
 var router = express.Router();
 
@@ -14,22 +14,18 @@ router.post('/', function (req: express.Request, res: express.Response) {
         return;
     }
 
-    var dbres = Utils.Utils.login(req.body.username, req.body.password, req.ip);
-    if (!dbres[0]) {
-        res.status(dbres[1]).json({ error: dbres[2] });
-    }
-    else {
-        var validate = Utils.Utils.validate(dbres[2]);
-        if (!validate[0]) {
-            res.status(validate[1]).json({ error: validate[2] });
-        }
-        else {
-            //res.redirect(303, '/api/users');
-            //res.status(303).set('Location', '/api/users');
-
-            res.status(validate[1]).json({ authtoken: dbres[2], permissions: validate[2][0] });
-        }
-    }
+    Utils.login(req.body.username, req.body.password, req.ip)
+        .then(dbres => {
+            var validate = Utils.validate(dbres[1]);
+            if (validate[0] !== 200) {
+                res.status(validate[0]).json({ error: validate[1] });
+            }
+            else {
+                res.status(validate[0]).json({ authtoken: dbres[1], permissions: validate[1][0] });
+            }
+        }, dbres => {
+            res.status(dbres[0]).json({ error: dbres[1] });
+        });
 });
 
 module.exports = router;

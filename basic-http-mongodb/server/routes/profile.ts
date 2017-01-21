@@ -1,16 +1,15 @@
 ﻿
-import Utils = require('../utils');
+import { Utils } from '../utils';
 import express = require('express');
 var router = express.Router();
 
 router.get('/', function (req: express.Request, res: express.Response) {
-    var dbres = Utils.Utils.getsingle(res.locals.authtoken);
-    if (!dbres[0]) {
-        res.status(dbres[1]).json({ error: dbres[2] });
-    }
-    else {
-        res.status(dbres[1]).json(dbres[2]);
-    }
+    Utils.getsingle(res.locals.authtoken)
+        .then(dbres => {
+            res.status(<number>dbres[0]).json(dbres[1]);
+        }, dbres => {
+            res.status(dbres[0]).json({ error: dbres[1] });
+        });
 });
 
 router.post('/', function (req: express.Request, res: express.Response) {
@@ -26,13 +25,12 @@ router.post('/', function (req: express.Request, res: express.Response) {
         return;
     }
 
-    var dbres = Utils.Utils.update(req.body, res.locals.authtoken);
-    if (!dbres[0]) {
-        res.status(dbres[1]).json({ error: dbres[2] });
-    }
-    else {
-        res.sendStatus(dbres[1]);
-    }
+    Utils.update(req.body, res.locals.authtoken)
+        .then(dbres => {
+            res.sendStatus(dbres[0]);            
+        }, dbres => {
+            res.status(dbres[0]).json({ error: dbres[1] });
+        });
 });
 
 module.exports = router;

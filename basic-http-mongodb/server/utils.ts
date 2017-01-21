@@ -1,13 +1,15 @@
 ﻿import fs = require('fs');
 import _ = require("lodash");
 import crypto = require('crypto');
-import DB = require('./db/authdb');
+import mongoose = require('mongoose');
+import { DB, Record } from './db/authdb';
 
 export class Utils {
     static session = {};
 
     static init() {
-        DB.DB.init();
+        var promise = DB.init();
+        //if (promise) promise.then(args => Utils.seed());
     }
 
     static hash(password: string, salt: string) {
@@ -19,60 +21,61 @@ export class Utils {
     }
 
     static seed() {
-        DB.DB.removeall();
-
-        var salt = Utils.random();
-        DB.DB.add({
-            username: 'admin',
-            email: 'admin@com',
-            birthdate: new Date().toISOString(),
-            permissions: 'admin',
-            salt: salt,
-            password: Utils.hash('123', salt)
-        });
-
-        salt = Utils.random();
-        DB.DB.add({
-            username: 'user',
-            email: 'user@com',
-            birthdate: new Date().toISOString(),
-            permissions: 'user',
-            salt: salt,
-            password: Utils.hash('123', salt)
-        });
-
-        DB.DB.save();
+        var salt1 = Utils.random();
+        var salt2 = Utils.random();
+        
+        return DB.removeall()
+            .then(args => DB.add({
+                username: 'admin',
+                email: 'admin@com',
+                birthdate: new Date().toISOString(),
+                permissions: 'admin',
+                salt: salt1,
+                password: Utils.hash('123', salt1)
+            }))
+            .then(args => DB.add({
+                username: 'user',
+                email: 'user@com',
+                birthdate: new Date().toISOString(),
+                permissions: 'user',
+                salt: salt2,
+                password: Utils.hash('123', salt2)
+            }));
     }
 
-    static login(username: string, pass: string, ip: string): any[] {
-        var record = DB.DB.findbyname(username);
-        if (record && record.password === Utils.hash(pass, record.salt)) {
-            var sessionid = Utils.random();
-            Utils.session[sessionid] = [record.permissions, username, ip];
+    static login(username: string, pass: string, ip: string) {
+        var sessionid = null, permissions = null;
 
-            DB.DB.update({
-                username: username,
-                loginsuccesson: new Date().toISOString(),
-                failedlogins: 0,
-                loginip: ip
+        return DB.findbyname(username)
+            .then(doc => {
+                if (!doc) throw new Error();
+
+                if (doc.password === Utils.hash(pass, doc.salt)) {
+                    permissions = doc.permissions;
+                    sessionid = Utils.random();
+                    return DB.update({
+                            username: doc.username,
+                            loginsuccesson: new Date().toISOString(),
+                            failedlogins: 0,
+                            loginip: ip
+                        });
+                }
+
+                return DB.update({
+                        username: doc.username,
+                        loginfailureon: new Date().toISOString(),
+                        failedlogins: (doc.failedlogins || 0) + 1
+                    })
+                    .then<Record>((args) => { throw new Error(); });
+            })
+            .then(args => {
+                Utils.session[sessionid] = [permissions, username, ip];
+
+                return [200, sessionid];
+            }, err => {
+                console.error('login: ', err);
+                return Promise.reject([401, 'user not found or password is incorrect']);
             });
-
-            DB.DB.save();
-
-            return [true, 200, sessionid];
-        }
-
-        if (record) {
-            DB.DB.update({
-                username: username,
-                loginfailureon: new Date().toISOString(),
-                failedlogins: (record.failedlogins || 0) + 1
-            });
-
-            DB.DB.save();
-        }
-
-        return [false, 401, 'user not found or password is incorrect'];
     }
 
     static logout(authtoken: string):void {
@@ -80,94 +83,147 @@ export class Utils {
     }
 
     static validate(authtoken: string): any[] {
-        return !authtoken || !Utils.session[authtoken] ? [false, 401, 'session is invalid'] : [true, 200, Utils.session[authtoken]];
+        return !authtoken || !Utils.session[authtoken] ? [401, 'session is invalid'] : [200, Utils.session[authtoken]];
     }
 
-    static add(record: DB.Record, authtoken: string): any[] {
-        if (DB.DB.findbyname(record.username)) return [false, 500, 'user already exists'];
-        if (authtoken && Utils.session[authtoken][0] !== 'admin') return [false, 403, 'operation requires special permission'];
-
-        var salt = Utils.random();
-        var newrecord: DB.Record = {
-            username: record.username,
-            password: Utils.hash(record.password, salt),
-            salt: salt,
-            permissions: record.permissions,
-            email: record.email,
-            birthdate: record.birthdate,
-            createdon: new Date().toISOString(),
-            updatedon: new Date().toISOString(),
-            failedlogins: 0
-        };
-
-        if (!authtoken) {
-            newrecord.loginsuccesson = new Date().toISOString();
-            newrecord.loginip = record.loginip;
+    static add(record: Record, authtoken: string) {
+        if (authtoken && Utils.session[authtoken][0] !== 'admin') {
+            return Promise.reject([403, 'operation requires special permission']);
         }
 
-        DB.DB.add(newrecord);
-        DB.DB.save();
+        return DB.findbyname(record.username)
+            .then(doc => {
+                if (doc) return Promise.reject([500, 'user already exists']);
 
-        if (!authtoken) {
-            var sessionid = Utils.random();
-            Utils.session[sessionid] = ['user', record.username, record.loginip];
-            return [true, 200, sessionid];
+                var salt = Utils.random();
+                var newrecord: Record = {
+                    username: record.username,
+                    password: Utils.hash(record.password, salt),
+                    salt: salt,
+                    permissions: record.permissions,
+                    email: record.email,
+                    birthdate: record.birthdate,
+                    createdon: new Date().toISOString(),
+                    updatedon: new Date().toISOString(),
+                    failedlogins: 0
+                };
+
+                if (!authtoken) {
+                    newrecord.loginsuccesson = new Date().toISOString();
+                    newrecord.loginip = record.loginip;
+                }
+
+                return DB.add(newrecord);
+            })
+            .then(doc => {
+                if (!authtoken) {
+                    var sessionid = Utils.random();
+                    Utils.session[sessionid] = ['user', record.username, record.loginip];
+                    return [200, sessionid];
+                }
+
+                return [200, ''];
+            }, err => {
+                console.error('add: ', err);
+
+                if (_.isArray(err) && err.length === 2) {
+                    return Promise.reject(err);
+                }
+
+                return Promise.reject([500, 'internal error']);
+            });
+    }
+
+    static remove(username: string, authtoken: string) {
+        if (Utils.session[authtoken][0] !== 'admin') {
+            return Promise.reject([403, 'operation requires special permission']);
         }
 
-        return [true, 200, ''];
+        if (Utils.session[authtoken][1] === username) {
+            return Promise.reject([500, 'you cannot remove yourself']);
+        }
+
+        return DB.findbyname(username)
+            .then(doc => {
+                if (!doc) return Promise.reject([401, 'user not found or password is incorrect']);
+                return DB.remove(username);
+            })
+            .then(doc => {
+                return [200, ''];
+            }, err => {
+                console.error('remove: ', err);
+
+                if (_.isArray(err) && err.length === 2) {
+                    return Promise.reject(err);
+                }
+
+                return Promise.reject([500, 'internal error']);
+            });
     }
 
-    static remove(username: string, authtoken: string): any[] {
-        if (!DB.DB.findbyname(username)) return [false, 401, 'user not found or password is incorrect'];
-        if (Utils.session[authtoken][0] !== 'admin') return [false, 403, 'operation requires special permission'];
-        if (Utils.session[authtoken][1] === username) return [false, 500, 'you cannot remove yourself'];
-
-        DB.DB.remove(username);
-        DB.DB.save();
-
-        return [true, 200, ''];
-    }
-
-    static getsingle(authtoken: string): any[] {       
+    static getsingle(authtoken: string) {       
         var user = Utils.session[authtoken][1];
-        var record = DB.DB.findbyname(user);
-        if (!record) return [false, 401, 'user not found or password is incorrect'];
+        return DB.findbyname(user)
+            .then(doc => {
+                if (!doc) return Promise.reject([401, 'user not found or password is incorrect']);
 
-        var record2 = _.omit(record, ['password', 'salt']);
-        return [true, 200, record2];
+                var record = _.omit(doc, ['password', 'salt']);
+                return [200, record];
+            }, err => {
+                console.error('getsingle: ', err);
+                return Promise.reject([401, 'user not found or password is incorrect']);
+            });
     }
 
-    static getall(authtoken: string): any[] {
-        if (Utils.session[authtoken][0] !== 'admin') return [false, 403, <any>'operation requires special permission'];
-
-        var res = _.map(DB.DB.findall(), (itm: any, key) => {
-            itm = _.omit(itm, ['password', 'salt']);
-            return itm;
-        });
-
-        return [true, 200, res];
-    }
-
-    static update(record: DB.Record, authtoken: string): any[] {
-        var oldrecord = DB.DB.findbyname(record.username);
-        if (!oldrecord) return [false, 401, 'user not found or password is incorrect'];
-        if (Utils.session[authtoken][0] !== 'admin' && Utils.session[authtoken][1] !== record.username) return [false, 403, 'operation requires special permission'];
-
-        if (record.password) {
-            var salt = Utils.random();
-            oldrecord.salt = salt;
-            oldrecord.password = Utils.hash(record.password, salt);
+    static getall(authtoken: string) {
+        if (Utils.session[authtoken][0] !== 'admin') {
+            return Promise.reject([403, 'operation requires special permission']);
         }
 
-        if (record.permissions && Utils.session[authtoken][0] === 'admin') oldrecord.permissions = record.permissions;
+        return DB.findall()
+            .then(docs => {
+                if (!docs) return Promise.reject([500, 'no users found']);
 
-        oldrecord.email = record.email;
-        oldrecord.birthdate = record.birthdate;
-        oldrecord.updatedon = new Date().toISOString();
+                var res = <any>_.map(docs, (itm: any, key) => {
+                    itm = _.omit(itm, ['password', 'salt']);
+                    return itm;
+                });
 
-        DB.DB.update(oldrecord);
-        DB.DB.save();
+                return [200, res];
+            }, err => {
+                console.error('getall: ', err);
+                return Promise.reject([500, 'no users found']);
+            });
+    }
 
-        return [true, 200, ''];
+    static update(record: Record, authtoken: string) {
+        if (Utils.session[authtoken][0] !== 'admin' && Utils.session[authtoken][1] !== record.username) {
+            return Promise.reject([403, 'operation requires special permission']);
+        }
+
+        return DB.findbyname(record.username)
+            .then(doc => {
+                if (!doc) throw new Error();
+
+                if (record.password) {
+                    var salt = Utils.random();
+                    doc.salt = salt;
+                    doc.password = Utils.hash(record.password, salt);
+                }
+
+                if (record.permissions && Utils.session[authtoken][0] === 'admin') doc.permissions = record.permissions;
+
+                doc.email = record.email;
+                doc.birthdate = record.birthdate;
+                doc.updatedon = new Date().toISOString();
+
+                return DB.update(doc);
+            })
+            .then(doc => {
+                return [200, ''];
+            }, err => {
+                console.error('login: ', err);
+                return Promise.reject([401, 'user not found or password is incorrect']);
+            });
     }
 }

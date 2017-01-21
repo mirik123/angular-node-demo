@@ -57,12 +57,12 @@ app.config(['$mdThemingProvider', '$mdDateLocaleProvider', '$httpProvider',
         return m.isValid();
     }; 
 
-    $httpProvider.interceptors.push(function ($q) {
+    /*$httpProvider.interceptors.push(['$q', function ($q) {
         return {
             request: function (config) { return config; },
             response: function (response) { return $q.reject(response); }
         };
-    });
+    }]);*/
 }]);
 
 app.config(["$stateProvider", "$urlRouterProvider", '$locationProvider',

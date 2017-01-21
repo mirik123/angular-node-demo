@@ -30,7 +30,7 @@ export class loginCtrl {
     login() {
         var base64creds = this.appService.encodecreds(this.loginmodel.username, this.loginmodel.password);
         this.appService.http('/api/login', 'POST', { 'Authorization': 'Basic ' + base64creds })
-            .then((dt) => {
+            .then(dt => {
                 if (!dt.data) {
                     this.httpError = 'incorrect request';
                     return;
@@ -47,7 +47,7 @@ export class loginCtrl {
 
                 this.$state.go('sidenav');
             },
-            (dt) => {
+            dt => {
                 this.httpError = dt.data;
                 this.appService.permissions = '';
                 this.appService.authtoken = '';

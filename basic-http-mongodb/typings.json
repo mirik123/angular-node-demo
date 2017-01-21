@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "angular-cookies": "registry:dt/angular-cookies#1.4.0+20161206185711",
+    "body-parser": "registry:dt/body-parser#0.0.0+20160726204056",
+    "express": "registry:dt/express#4.0.0+20161115070701",
+    "mongodb": "registry:dt/mongodb#2.1.0+20170107134426",
+    "morgan": "registry:dt/morgan#1.7.0+20160726064905",
+    "serve-favicon": "registry:dt/serve-favicon#2.2.0+20161128184045",
+    "serve-static": "registry:npm/serve-static#1.11.1+20161113104247"
+  },
+  "globalDependencies": {
+    "es6-promise": "registry:dt/es6-promise#0.0.0+20160726191732",
+    "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20161119044246",
+    "express-session": "registry:dt/express-session#0.0.0+20161119044246",
+    "mongoose": "registry:dt/mongoose#4.7.0+20170109095616",
+    "node": "registry:dt/node#7.0.0+20170110233017"
+  }
+}

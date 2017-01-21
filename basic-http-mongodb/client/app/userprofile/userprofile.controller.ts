@@ -30,7 +30,7 @@ export class userprofileCtrl {
 
     reload() {
         this.appService.http('/api/profile', 'GET')
-            .then((dt) => {
+            .then(dt => {
                 this.profilemodel = {
                     username: this.appService.username,
                     password: '',
@@ -42,7 +42,7 @@ export class userprofileCtrl {
                 this.httpError = null;
                 console.log('get profile', dt.data);
             },
-            (dt) => {
+            dt => {
                 this.httpError = dt.data;
                 console.error('profile error', dt.data);
             });
@@ -54,7 +54,7 @@ export class userprofileCtrl {
         this.profilemodel.password = '';
 
         this.appService.http('/api/profile', 'POST', {}, model)
-            .then((dt) => {
+            .then(dt => {
                 this.httpError = null;
                 console.log('updated profile', dt.data);
 
@@ -65,7 +65,7 @@ export class userprofileCtrl {
                         .ok('OK')
                 );
             },
-            (dt) => {
+            dt => {
                 this.httpError = dt.data;                
                 console.error('profile error', dt.data);
             });

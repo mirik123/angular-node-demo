@@ -1,6 +1,9 @@
 ﻿import fs = require('fs');
 import _ = require("lodash");
+
+require('es6-promise').polyfill();
 import mongoose = require('mongoose');
+//import { Promise } from 'es6-promise';
 
 class BaseRecord {
     loginsuccesson?: string;
@@ -21,61 +24,87 @@ export class Record extends BaseRecord {
 }
 
 export class DB {
-    static records: mongoose.Model<mongoose.Document>;
+    static records: mongoose.Model<mongoose.Document> = null;
 
-    static init(): mongoose.Promise<{}> {
-        var options: mongoose.ConnectionOptions = { user: 'admin', pass: 'admin', server: { socketOptions: { keepAlive: 120 } }, replset: { socketOptions: { keepAlive: 120 } } };
-        mongoose.connect('mongodb://localhost/angular-node-demo', options);        
-        var schema = new mongoose.Schema({
-            username: { type: String, unique: true, required: true, index: true },
-            email: { type: String, required: true },
-            birthdate: { type: String, required: true },
-            permissions: { type: String, required: true },
-            password: { type: String, select: false, validate: (itm) => { return itm.length > 2; } },
-            salt: { type: String, select: false },
-            loginsuccesson: Date,
-            loginfailureon: Date,
-            failedlogins: Number,
-            updatedon: Date,
-            createdon: Date,
-            loginip: String
-        }, { timestamps: true });
+    static init(): Promise<{}> {
+        if (mongoose.connection.readyState) {
+            console.error('mongoose is already connected, readyState=', mongoose.connection.readyState);
+            return;
+        }
 
-        DB.records = mongoose.model('Record', schema);
+        mongoose.Promise = <any>global.Promise;
 
-        var promise = new mongoose.Promise();
-        var connection = mongoose.connection;
-        connection.on('error', (msg) => promise.reject(msg));
-        connection.once('open', (result) => promise.resolve(result));
+        return new Promise<{}>((resolve, reject) => {
+            var options: mongoose.ConnectionOptions = {
+                //user: 'admin',
+                //pass: 'admin',
+                //promiseLibrary: require('bluebird'),
+                server: { socketOptions: { keepAlive: 120 } },
+                replset: { socketOptions: { keepAlive: 120 } }
+            };
 
-        return promise;
+            mongoose.connect('mongodb://localhost:27017/local', options);        
+
+            mongoose.connection.on('error', (msg) => {
+                console.error('mongoose error: ', msg);
+                reject(msg);
+            });
+
+            mongoose.connection.on('disconnected', (args) => {
+                console.error('mongoose disconnected: ', args);
+            });
+
+            mongoose.connection.on('connected', (args) => {
+                console.error('mongoose connected: ', args);
+            });
+
+            mongoose.connection.once('open', () => {
+                var schema = new mongoose.Schema({
+                    username: { type: String, unique: true, required: true, index: true },
+                    email: { type: String, required: true },
+                    birthdate: { type: String, required: true },
+                    permissions: { type: String, required: true },
+                    password: String,
+                    salt: String,
+                    loginsuccesson: Date,
+                    loginfailureon: Date,
+                    failedlogins: Number,
+                    updatedon: Date,
+                    createdon: Date,
+                    loginip: String
+                },
+                {
+                    timestamps: true
+                });
+
+                DB.records = mongoose.model('Record', schema);
+
+                resolve();
+            });
+        });
     }
 
-    static save(): mongoose.Promise<mongoose.Document> {
-        return DB.records.save().exec();
+    static findbyname(username: string): Promise<Record> {
+        return DB.records.findOne({ username: username }).lean().exec();
     }
 
-    static findbyname(username: string): mongoose.Promise<mongoose.Document> {
-        return DB.records.findOne({ username: username }).exec();
+    static add(record: Record): Promise<mongoose.Document> {
+        return new DB.records(record).save();
     }
 
-    static add(record: Record): mongoose.Promise<mongoose.Document> {
-        return DB.records.create(record);
-    }
-
-    static remove(username: string): mongoose.Promise<{}> {
+    static remove(username: string): Promise<void> {
         return DB.records.remove({ username: username }).exec();
     }
 
-    static removeall(): mongoose.Promise<{}> {
+    static removeall(): Promise<void> {
         return DB.records.remove({}).exec();
     }
     
-    static findall(): mongoose.Promise<mongoose.Document[]> {
-        return DB.records.find({}).exec();
+    static findall(): Promise<Record[]> {
+        return DB.records.find({}).lean().exec();
     }
 
-    static update(record: any): mongoose.Promise<mongoose.Document> {
-        return DB.records.findOneAndUpdate({ username: record.username }, record).exec();
+    static update(record: any): Promise<any> {
+        return DB.records.update({ username: record.username }, record).exec();
     }
 }
