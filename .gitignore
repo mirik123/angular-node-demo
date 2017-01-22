@@ -3,3 +3,6 @@
 ################################################################################
 
 /basic-http-auth/wwwroot
+/basic-http-client/node_modules/.staging
+/basic-ws-client/node_modules/.staging
+/.vs/config/applicationhost.config
