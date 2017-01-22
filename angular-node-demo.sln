@@ -1,0 +1,90 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "basic-http-client", "basic-http-client\", "{EDE3A78C-9767-4FD4-8C09-3922222E5F3D}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_55489"
+		Debug.AspNetCompiler.PhysicalPath = "basic-http-client\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_55489\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_55489"
+		Release.AspNetCompiler.PhysicalPath = "basic-http-client\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_55489\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "55489"
+		SlnRelativePath = "basic-http-client\"
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "basic-ws-client", "basic-ws-client\", "{348ED89E-484C-4E2C-85E7-7E8C738EA327}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_55490"
+		Debug.AspNetCompiler.PhysicalPath = "basic-ws-client\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_55490\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_55490"
+		Release.AspNetCompiler.PhysicalPath = "basic-ws-client\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_55490\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "55490"
+		SlnRelativePath = "basic-ws-client\"
+	EndProjectSection
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "node-http-json", "node-http-json\node-http-json.njsproj", "{9F605619-9EB6-4089-8CA3-01BB28CE3C8F}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "node-http-mongodb-es5", "node-http-mongodb-es5\node-http-mongodb-es5.njsproj", "{49E3851A-1BDD-4B29-8261-283C5D5EC5C2}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "node-http-mongodb-es6", "node-http-mongodb-es6\node-http-mongodb-es6.njsproj", "{12C380B7-A2D6-4F59-834C-43CF0C97E611}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "node-ws-json", "node-ws-json\node-ws-json.njsproj", "{05565ACC-6455-4909-BA0F-11A4089CC6C8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EDE3A78C-9767-4FD4-8C09-3922222E5F3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDE3A78C-9767-4FD4-8C09-3922222E5F3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDE3A78C-9767-4FD4-8C09-3922222E5F3D}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDE3A78C-9767-4FD4-8C09-3922222E5F3D}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{348ED89E-484C-4E2C-85E7-7E8C738EA327}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{348ED89E-484C-4E2C-85E7-7E8C738EA327}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{348ED89E-484C-4E2C-85E7-7E8C738EA327}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{348ED89E-484C-4E2C-85E7-7E8C738EA327}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{9F605619-9EB6-4089-8CA3-01BB28CE3C8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F605619-9EB6-4089-8CA3-01BB28CE3C8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F605619-9EB6-4089-8CA3-01BB28CE3C8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F605619-9EB6-4089-8CA3-01BB28CE3C8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49E3851A-1BDD-4B29-8261-283C5D5EC5C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49E3851A-1BDD-4B29-8261-283C5D5EC5C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49E3851A-1BDD-4B29-8261-283C5D5EC5C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49E3851A-1BDD-4B29-8261-283C5D5EC5C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12C380B7-A2D6-4F59-834C-43CF0C97E611}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12C380B7-A2D6-4F59-834C-43CF0C97E611}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12C380B7-A2D6-4F59-834C-43CF0C97E611}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12C380B7-A2D6-4F59-834C-43CF0C97E611}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05565ACC-6455-4909-BA0F-11A4089CC6C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05565ACC-6455-4909-BA0F-11A4089CC6C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05565ACC-6455-4909-BA0F-11A4089CC6C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05565ACC-6455-4909-BA0F-11A4089CC6C8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
