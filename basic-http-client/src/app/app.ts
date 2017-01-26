@@ -104,14 +104,13 @@ app.config(["$stateProvider", "$urlRouterProvider", '$locationProvider',
         $urlRouterProvider.otherwise('/login');
     }]);
 
-var sidenavCmp = require('./sidenav/sidenav.directive');
 app.service("appService", require('./app.service').appService);
 app.controller("mainCtrl", require('./main/main.controller').mainCtrl);
 app.controller("loginCtrl", require('./login/login.controller').loginCtrl);
 app.controller("usermngCtrl", require('./usermng/usermng.controller').usermngCtrl);
 app.controller("userprofileCtrl", require('./userprofile/userprofile.controller').userprofileCtrl);
 app.controller("sidenavCtrl", require('./sidenav/sidenav.controller').sidenavCtrl);
-app.component("sidenavDd", new sidenavCmp.sidenavDd());
+app.component("sidenavDd", new (require('./sidenav/sidenav.directive')).sidenavDd());
 
 //import * as appService from "./main/app.service";
-//mport {appService} from "./main/app.service";
+//import {appService} from "./main/app.service";

@@ -85,7 +85,7 @@ gulp.task('script-express', ['prints', 'client'], function () {
 
     var dev = browserify('./server/app.ts', {
             debug: true,
-            browserField: false,
+            //browserField: false,
             builtins: false,
             commondir: false,
             insertGlobalVars: {

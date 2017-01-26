@@ -3,6 +3,7 @@
     "angular-cookies": "registry:dt/angular-cookies#1.4.0+20161206185711"    
   },
   "globalDependencies": {   
+    "moment": "registry:dt/moment#2.11.1+20161010105546",
     "node": "registry:dt/node#7.0.0+20170110233017"
   }
 }

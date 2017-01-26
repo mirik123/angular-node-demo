@@ -1,5 +1,6 @@
 ﻿
 import { Utils } from '../utils';
+import _ = require("lodash");
 import express = require('express');
 var router = express.Router();
 
