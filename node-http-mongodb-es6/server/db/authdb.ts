@@ -3,7 +3,6 @@ import _ = require("lodash");
 
 require('es6-promise').polyfill();
 import mongoose = require('mongoose');
-//import { Promise } from 'es6-promise';
 
 class BaseRecord {
     loginsuccesson?: string;
@@ -26,6 +25,10 @@ export class Record extends BaseRecord {
 export class DB {
     static records: mongoose.Model<mongoose.Document> = null;
 
+    static close() {
+        mongoose.connection.close();
+    }
+
     static init(): Promise<{}> {
         mongoose.Promise = <any>global.Promise;
 
@@ -39,7 +42,7 @@ export class DB {
             var options: mongoose.ConnectionOptions = {
                 //user: 'admin',
                 //pass: 'admin',
-                //promiseLibrary: require('bluebird'),
+                //promiseLibrary: global.Promise,
                 server: { socketOptions: { keepAlive: 120 } },
                 replset: { socketOptions: { keepAlive: 120 } }
             };
@@ -51,12 +54,12 @@ export class DB {
                 reject(msg);
             });
 
-            mongoose.connection.on('disconnected', (args) => {
-                console.error('mongoose disconnected: ', args);
+            mongoose.connection.on('disconnected', () => {
+                console.error('mongoose disconnected: ');
             });
 
-            mongoose.connection.on('connected', (args) => {
-                console.error('mongoose connected: ', args);
+            mongoose.connection.on('connected', () => {
+                console.error('mongoose connected: ');
             });
 
             mongoose.connection.once('open', () => {
@@ -76,6 +79,9 @@ export class DB {
                 },
                 {
                     timestamps: true
+                }).pre('save', function (next) {
+                    this.updatedon = new Date();
+                    next();
                 });
 
                 DB.records = mongoose.model('Record', schema);

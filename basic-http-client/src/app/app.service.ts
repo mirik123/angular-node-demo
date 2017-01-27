@@ -1,4 +1,14 @@
-﻿
+﻿import * as _ from 'lodash';
+
+export interface IAppService {
+    title: { value: string };
+    username: string;
+    authtoken: string;
+    permissions: string;
+    host: string;
+    encodecreds(username, password);
+    http(url: string, method: string, headers?: ng.IHttpRequestConfigHeaders, data?): ng.IHttpPromise<any>;
+}
 
 export class appService implements IAppService {
     private $http: ng.IHttpService;

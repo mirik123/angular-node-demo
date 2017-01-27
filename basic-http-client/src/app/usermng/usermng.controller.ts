@@ -1,4 +1,6 @@
-﻿
+﻿import * as _ from 'lodash';
+import { IAppService } from '../app.service';
+
 export class usermngCtrl {
     title: string;
     $state: ng.ui.IStateService;

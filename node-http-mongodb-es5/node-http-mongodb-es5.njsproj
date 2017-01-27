@@ -45,18 +45,6 @@
     <Content Include="server\sslcert\server.key.passphrase" />
     <Content Include="tsconfig.json" />
     <Content Include="typings.json" />
-    <Content Include="typings\.gitignore" />
-    <Content Include="typings\globals\es6-promise\typings.json" />
-    <Content Include="typings\globals\express-serve-static-core\typings.json" />
-    <Content Include="typings\globals\express-session\typings.json" />
-    <Content Include="typings\globals\mongoose\typings.json" />
-    <Content Include="typings\globals\node\typings.json" />
-    <Content Include="typings\modules\body-parser\typings.json" />
-    <Content Include="typings\modules\express\typings.json" />
-    <Content Include="typings\modules\mongodb\typings.json" />
-    <Content Include="typings\modules\morgan\typings.json" />
-    <Content Include="typings\modules\serve-favicon\typings.json" />
-    <Content Include="typings\modules\serve-static\typings.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gulpfile.js" />
@@ -66,17 +54,6 @@
     <Folder Include="server\db\" />
     <Folder Include="server\routes\" />
     <Folder Include="server\sslcert\" />
-    <Folder Include="typings\" />
-    <Folder Include="typings\globals\express-serve-static-core\" />
-    <Folder Include="typings\globals\express-session\" />
-    <Folder Include="typings\globals\mongoose\" />
-    <Folder Include="typings\globals\node\" />
-    <Folder Include="typings\modules\body-parser\" />
-    <Folder Include="typings\modules\express\" />
-    <Folder Include="typings\modules\mongodb\" />
-    <Folder Include="typings\modules\morgan\" />
-    <Folder Include="typings\modules\serve-favicon\" />
-    <Folder Include="typings\modules\serve-static\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="server\app.ts" />
@@ -85,20 +62,6 @@
     <TypeScriptCompile Include="server\routes\profile.ts" />
     <TypeScriptCompile Include="server\routes\users.ts" />
     <TypeScriptCompile Include="server\utils.ts" />
-    <TypeScriptCompile Include="typings\globals\express-serve-static-core\index.d.ts" />
-    <TypeScriptCompile Include="typings\globals\express-session\index.d.ts" />
-    <TypeScriptCompile Include="typings\globals\mongoose\index.d.ts" />
-    <TypeScriptCompile Include="typings\globals\node\index.d.ts" />
-    <TypeScriptCompile Include="typings\lodash.d.ts" />
-    <TypeScriptCompile Include="typings\modules\body-parser\index.d.ts" />
-    <TypeScriptCompile Include="typings\modules\express\index.d.ts" />
-    <TypeScriptCompile Include="typings\modules\mongodb\index.d.ts" />
-    <TypeScriptCompile Include="typings\modules\morgan\index.d.ts" />
-    <TypeScriptCompile Include="typings\modules\serve-favicon\index.d.ts" />
-    <TypeScriptCompile Include="typings\modules\serve-static\index.d.ts" />
-    <TypeScriptCompile Include="typings\moment-node.d.ts" />
-    <TypeScriptCompile Include="typings\moment.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

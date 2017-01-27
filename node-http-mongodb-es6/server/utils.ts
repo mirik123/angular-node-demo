@@ -17,6 +17,9 @@ export class Utils {
         }
     }
 
+    static close() {
+        DB.close();
+    }
 
     static hash(password: string, salt: string) {
         return crypto.pbkdf2Sync(password, salt, 1000, 32, 'sha1').toString('hex');

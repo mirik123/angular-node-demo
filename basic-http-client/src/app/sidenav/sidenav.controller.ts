@@ -1,4 +1,6 @@
-﻿
+﻿import * as _ from 'lodash';
+import { IAppService } from '../app.service';
+
 export class sidenavCtrl {
     get title() {
         return this.appService.title.value ? this.appService.username + ' - ' + this.appService.title.value : '';

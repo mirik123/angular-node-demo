@@ -1,4 +1,6 @@
-﻿
+﻿/// <reference path="../typings/index.d.ts" />
+
+
 import express = require('express');
 import https = require('https');
 import http = require('http');

@@ -1,4 +1,6 @@
-﻿
+﻿/// <reference path="../typings/index.d.ts" />
+
+
 import express = require('express');
 import https = require('https');
 import http = require('http');
@@ -105,9 +107,17 @@ app.use(function (err, req: express.Request, res: express.Response, next) {
     res.end();
 });
 
-http.createServer(app).listen(8080, function () {
-    console.log('Express server listening on port 8080 and folder: ' + __dirname + '/../wwwroot/client');
-    Utils.init();
+var server = http.createServer(app)
+    .listen(8080, function () {
+        console.log('Express server listening on port 8080 and folder: ' + __dirname + '/../wwwroot/client');
+        Utils.init();
+    }).on('close', function () {
+        console.log(' Stopping ...');
+        Utils.close();
+    });
+
+process.on('SIGINT', function () {
+    server.close();
 });
 
 //https://matoski.com/article/node-express-generate-ssl/
@@ -129,3 +139,4 @@ http.createServer(app).listen(8080, function () {
     console.log("Secure Express server listening on port 8443");
     Utils.Utils.init();
 });*/
+

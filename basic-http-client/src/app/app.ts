@@ -1,20 +1,18 @@
-/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../node_modules/@types/angular/index.d.ts" />
+/// <reference path="../../node_modules/@types/angular-cookies/index.d.ts" />
+/// <reference path="../../node_modules/@types/angular-material/index.d.ts" />
+/// <reference path="../../node_modules/@types/angular-ui-router/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
-interface IAppService {
-    title: {value:string};
-    username: string;
-    authtoken: string;
-    permissions: string;
-    host: string;
-    encodecreds(username, password);
-    http(url: string, method: string, headers?: ng.IHttpRequestConfigHeaders, data?): ng.IHttpPromise<any>;
-}
+import * as _  from 'lodash';
+import angular = require('angular');
+import { IAppService } from './app.service';
 
 
 var app = angular.module('app', ['app.templates', 'ngAria', 'ngMaterial', 'ngMdIcons', 'ngMessages', "ui.router", "ngAnimate", 'md.data.table', 'ngCookies']);
 
 app.run(['$rootScope', 'appService', '$state', function ($rootScope, appService, $state) {
-    $rootScope._ = window._;
+    //$rootScope._ = window._;
 
     $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
         if (toState.name.indexOf('login') < 0 && !appService.authtoken) {
