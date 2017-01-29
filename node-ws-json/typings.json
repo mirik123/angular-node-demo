@@ -2,13 +2,15 @@
   "dependencies": {
     "body-parser": "registry:dt/body-parser#0.0.0+20160726204056",
     "express": "registry:dt/express#4.0.0+20161115070701",
+    "lodash": "registry:npm/lodash#4.0.0+20161015015725",
     "morgan": "registry:dt/morgan#1.7.0+20160726064905",
     "serve-favicon": "registry:dt/serve-favicon#2.2.0+20161128184045",
-    "serve-static": "registry:npm/serve-static#1.11.1+20161113104247"
+    "serve-static": "registry:npm/serve-static#1.11.1+20161113104247",
+    "ws": "registry:dt/ws#0.0.0+20170123022058"
   },
   "globalDependencies": {
     "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20161119044246",
     "express-session": "registry:dt/express-session#0.0.0+20161119044246",
-    "node": "registry:dt/node#6.0.0+20161220160159"
+    "node": "registry:dt/node#7.0.0+20170110233017"
   }
 }

@@ -1,0 +1,24 @@
+﻿
+
+<div flex layout="column" layout-fill>
+    <sidenav-dd flex="1" style="text-align:center" options="vm.appService.title.value ? vm.appService.username + ' - ' + vm.appService.title.value : ''"></sidenav-dd>
+    <div flex="99" layout="row"  layout-fill>
+        <md-sidenav class="md-sidenav-left" md-component-id="left" md-is-locked-open="true">
+            <md-list>
+                <md-list-item md-ink-ripple layout="row" ng-click="vm.selectTab('usermng')" ng-if="vm.appService.permissions==='admin'">
+                    <ng-md-icon icon="security"></ng-md-icon>
+                    <span flex>User Management</span>
+                </md-list-item>
+                <md-list-item md-ink-ripple layout="row" ng-click="vm.selectTab('userprofile')">
+                    <ng-md-icon icon="reorder"></ng-md-icon>
+                    <span flex>User Profile</span>
+                </md-list-item>
+                <md-list-item md-ink-ripple layout="row" ng-click="vm.logout()">
+                    <ng-md-icon icon="logout"></ng-md-icon>
+                    <span flex>Logout</span>
+                </md-list-item>
+            </md-list>
+        </md-sidenav>
+        <div layout-fill ui-view></div>
+    </div>
+</div>

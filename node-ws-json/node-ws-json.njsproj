@@ -37,11 +37,33 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="package.json" />
+    <Content Include="server\db\users.json" />
+    <Content Include="server\sslcert\ca.crt" />
+    <Content Include="server\sslcert\ca.csr" />
+    <Content Include="server\sslcert\ca.key" />
+    <Content Include="server\sslcert\server.crt" />
+    <Content Include="server\sslcert\server.csr" />
+    <Content Include="server\sslcert\server.key" />
+    <Content Include="server\sslcert\server.key.passphrase" />
     <Content Include="tsconfig.json" />
     <Content Include="typings.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gulpfile.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="server\" />
+    <Folder Include="server\db\" />
+    <Folder Include="server\sslcert\" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="server\app.ts" />
+    <TypeScriptCompile Include="server\db\authdb.ts" />
+    <TypeScriptCompile Include="server\message.ts" />
+    <TypeScriptCompile Include="server\routes\login.ts" />
+    <TypeScriptCompile Include="server\routes\profile.ts" />
+    <TypeScriptCompile Include="server\routes\users.ts" />
+    <TypeScriptCompile Include="server\utils.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
