@@ -29,7 +29,7 @@ export class loginCtrl {
             this.$state.go('sidenav');
         }*/
 
-        if (this.appService.isConnected) {
+        if (this.appService.isConnected && this.appService.username) {
             this.$state.go('sidenav');
             return;
         }
@@ -41,8 +41,8 @@ export class loginCtrl {
             }
 
             if (!data.error) {
-                this.appService.permissions = data.permissions;
-                this.appService.username = data.username;
+                this.appService.permissions = data.content.permissions;
+                this.appService.username = data.content.username;
                 /*this.$cookies.putObject('angular-demo-authtoken', {
                     permissions: this.appService.permissions,
                     username: this.appService.username

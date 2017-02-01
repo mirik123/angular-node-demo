@@ -58,7 +58,7 @@ export class usermngCtrl {
         this.editmode = false;
         this.maxDate = new Date();
 
-        if (!this.appService.isConnected) return;
+        if (!this.appService.isConnected || !this.appService.username) return;
 
         appService.title.value = this.title;
 
@@ -76,10 +76,10 @@ export class usermngCtrl {
                 return;
             }
 
-            switch (data.action) {
+            switch (data.content.action) {
                 case 'get':
                     console.log('loaded users data', data);
-                    this.tabledata.table = data;
+                    this.tabledata.table = data.content;
 
                     _.each(this.tabledata.table, itm => { itm.birthdate = moment.utc(itm.birthdate).toDate(); });
 
@@ -103,7 +103,7 @@ export class usermngCtrl {
                     this.tabledata.selected = null;
                     this.tabledata.selectedcopy = null;
                     console.log('deleted users data', data);
-                    _.remove(this.tabledata.table, { username: data.username });
+                    _.remove(this.tabledata.table, { username: data.content.username });
 
                 default:
                     this.httpError = 'unknown action';
@@ -118,6 +118,8 @@ export class usermngCtrl {
     showDetails(row) {
         var cprow = _.clone(row);
         delete cprow.$$hashKey;
+        delete cprow.action;
+
         if (cprow.birthdate) cprow.birthdate = moment.utc(cprow.birthdate).format();
 
         this.$mdDialog.show({

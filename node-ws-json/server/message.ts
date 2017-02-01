@@ -2,31 +2,30 @@
 import { Utils } from './utils';
 import WebSocket = require("ws");
 
-export function message(data: any, ip: string, client: WebSocket) {
+export function message(data: any, ip: string, client: WebSocket): { target?:string, error?:string, content?:any } {
     switch (data.target) {
         case 'login':
             if (!data.content.username || !data.content.password) {
-                client.send({ error: 'user or password are empty' });
-                return;
+                return { error: 'user or password are empty' };
             }
 
             if (data.content.username.length > 32 || data.content.password.length > 32) {
-                client.send({ error: 'user or password are too long' });
-                return;
+                return { error: 'user or password are too long' };
             }
 
             var dbres = Utils.login(data.content.username, data.content.password, ip);
             if (!dbres[0]) {
-                client.send({ error: dbres[1] });
+                return { error: dbres[1] };
             }
             else {
                 client['session'] = { username: dbres[1], permissions: dbres[2] };
-                client.send(client['session']);
+                return { content: client['session'] };
             }
 
         case 'logout':
             client['session'] = null;
             client.close(200, { message: 'planned closure' });
+            return {};
 
         case 'profile':
             var session = client['session'];
@@ -34,36 +33,33 @@ export function message(data: any, ip: string, client: WebSocket) {
                 case 'get':
                     var dbres = Utils.getsingle(session.username);
                     if (!dbres[0]) {
-                        client.send({ error: dbres[1] });
+                        return { error: dbres[1] };
                     }
                     else {
-                        client.send(dbres[1]);
+                        return { content: dbres[1] };
                     }
 
                 case 'set':
                     if (!data.content.username || !data.content.birthdate || !data.content.email) {
-                        client.send({ error: 'required parameters are empty' });
-                        return;
+                        return { error: 'required parameters are empty' };
                     }
 
                     if (data.content.username.length > 32 || data.content.birthdate.length > 32 || data.content.email.length > 32 || data.content.password && data.content.password.length > 32) {
-                        client.send({ error: 'required parameters are too long' });
-                        return;
+                        return { error: 'required parameters are too long' };
                     }
 
                     if (session.permissions !== 'admin' && session.username !== data.content.username) {
-                        client.send({ error: 'operation requires special permission' });
-                        return;
+                        return { error: 'operation requires special permission' };
                     }
 
                     if (session.permissions !== 'admin') data.content.permissions = '';
 
                     var dbres = Utils.update(data.content);
                     if (!dbres[0]) {
-                        client.send({ error: dbres[1] });
+                        return { error: dbres[1] };
                     }
                     else {
-                        client.send({});
+                        return {};
                     }
             }
 
@@ -72,89 +68,79 @@ export function message(data: any, ip: string, client: WebSocket) {
             switch (data.content.action) {
                 case 'get':
                     if (session.permissions !== 'admin') {
-                        client.send({ error: 'this operation requires special permission' });
-                        return;
+                        return { error: 'this operation requires special permission' };
                     }
 
                     var dbres = Utils.getall();
                     if (!dbres[0]) {
-                        client.send({ error: dbres[1] });
+                        return { error: dbres[1] };
                     }
                     else {
-                        client.send(dbres[1]);
+                        return { content: dbres[1] };
                     }
 
                 case 'set':
                     if (!data.content.username || !data.content.birthdate || !data.content.email) {
-                        client.send({ error: 'required parameters are empty' });
-                        return;
+                        return { error: 'required parameters are empty' };
                     }
 
                     if (data.content.username.length > 32 || data.content.birthdate.length > 32 || data.content.email.length > 32 || data.content.password && data.content.password.length > 32) {
-                        client.send({ error: 'required parameters are too long' });
-                        return;
+                        return { error: 'required parameters are too long' };
                     }
 
                     if (session.permissions !== 'admin') {
-                        client.send({ error: 'this operation requires special permission' });
-                        return;
+                        return { error: 'this operation requires special permission' };
                     }
 
                     var dbres = Utils.update(data.content);
                     if (!dbres[0]) {
-                        client.send({ error: dbres[1] });
+                        return { error: dbres[1] };
                     }
                     else {
-                        client.send({});
+                        return {};
                     }
 
                 case 'new':
                     if (!data.content.username || !data.content.permissions || !data.content.birthdate || !data.content.email) {
-                        client.send({ error: 'required parameters are empty' });
-                        return;
+                        return { error: 'required parameters are empty' };
                     }
 
                     if (data.content.username.length > 32 || data.content.permissions && data.content.permissions.length > 32 ||
                         data.content.birthdate.length > 32 || data.content.email.length > 32 || data.content.password && data.content.password.length > 32) {
-                        client.send({ error: 'required parameters are too long' });
-                        return;
+                        return { error: 'required parameters are too long' };
                     }
 
                     if (session.permissions !== 'admin') {
-                        client.send({ error: 'this operation requires special permission' });
-                        return;
+                        return { error: 'this operation requires special permission' };
                     }
 
                     var dbres = Utils.add(data.content);
                     if (!dbres[0]) {
-                        client.send({ error: dbres[1] });
+                        return { error: dbres[1] };
                     }
                     else {
-                        client.send({});
+                        return {};
                     }
 
                 case 'delete':
                     if (!data.content.username) {
-                        client.send({ error: 'username is empty' });
-                        return;
+                        return { error: 'username is empty' };
                     }
 
                     if (session.permissions !== 'admin') {
-                        client.send({ error: 'this operation requires special permission' });
-                        return;
+                        return { error: 'this operation requires special permission' };
                     }
 
                     if (session.username === data.content.username) {
-                        client.send({ error: 'you cannot remove yourself' });
-                        return;
+                        return { error: 'you cannot remove yourself' };
                     }
 
                     var dbres = Utils.remove(data.content.username);
                     if (!dbres[0]) {
-                        client.send({ error: dbres[1] });
+                        return { error: dbres[1] };
                     }
                     else {
-                        client.send({});
+                        return { content: { username: data.content.username } };
                     }
             } 
     }

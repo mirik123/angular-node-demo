@@ -12,8 +12,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>05565acc-6455-4909-ba0f-11a4089cc6c8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>
-    </StartupFile>
+    <StartupFile>server\app.ts</StartupFile>
     <StartWebBrowser>True</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -60,9 +59,6 @@
     <TypeScriptCompile Include="server\app.ts" />
     <TypeScriptCompile Include="server\db\authdb.ts" />
     <TypeScriptCompile Include="server\message.ts" />
-    <TypeScriptCompile Include="server\routes\login.ts" />
-    <TypeScriptCompile Include="server\routes\profile.ts" />
-    <TypeScriptCompile Include="server\routes\users.ts" />
     <TypeScriptCompile Include="server\utils.ts" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

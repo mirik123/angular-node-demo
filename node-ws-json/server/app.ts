@@ -46,13 +46,13 @@ app.use(function (req: express.Request, res: express.Response, next) {
 });
 
 var httpsrv = http.createServer(app);
-httpsrv.listen(8080, function () {
-    console.log('Express server listening on port 8080 and folder: ' + __dirname + '/../wwwroot/client');
+var wsServer = new WebSocket.Server({ server: httpsrv });
+wsServer.on("connection", client => evtWebSockedConnected(wsServer, client)).on('error', function (err: Error) {
+    console.error('WebSocket error', err);
 });
 
-var wsServer = new WebSocket.Server({ server: httpsrv });
-wsServer.on("connection", evtWebSockedConnected.bind(wsServer)).on('error', function (err: Error) {
-    console.error('WebSocket error', err);
+httpsrv.listen(8080, function () {
+    console.log('Express server listening on port 8080 and folder: ' + __dirname + '/../wwwroot/client');
 });
 
 //https://matoski.com/article/node-express-generate-ssl/
@@ -64,7 +64,7 @@ wsServer.on("connection", evtWebSockedConnected.bind(wsServer)).on('error', func
 //cp server.key server.key.passphrase
 //openssl rsa -in server.key.passphrase -out server.key
 //openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
-var httpssrv = https.createServer({
+/*var httpssrv = https.createServer({
     key: fs.readFileSync(__dirname + '/sslcert/server.key'),
     cert: fs.readFileSync(__dirname + '/sslcert/server.crt'),
     ca: fs.readFileSync(__dirname + '/sslcert/ca.crt'),
@@ -78,14 +78,14 @@ httpssrv.listen(8443, function () {
 wsServer = new WebSocket.Server({
     server: httpssrv
     //path: '/ws'
-    /*, verifyClient: function (info, next) {
-        var token = info.req.headers['sec-websocket-protocol']; //info.req.headers.cookie['access_token']?
-        next(true);
-    }*/
+    //,verifyClient: function (info, next) {
+    //    var token = info.req.headers['sec-websocket-protocol']; //info.req.headers.cookie['access_token']?
+    //    next(true);
+    //}
 });
 wsServer.on("connection", evtWebSockedConnected.bind(wsServer)).on('error', function (err: Error) {
     console.error('WebSocket error', err);
-});
+});*/
 
 import { Utils } from './utils';
 import { message } from './message';
@@ -97,6 +97,7 @@ function evtWebSockedConnected(server: WebSocket.Server, client: WebSocket): voi
         });
     };
 
+    if (!client) return;
     var ip = client.upgradeReq.socket.remoteAddress;
     var location = url.parse(client.upgradeReq.url, true);
     // you might use location.query.access_token to authenticate or share sessions
@@ -110,7 +111,7 @@ function evtWebSockedConnected(server: WebSocket.Server, client: WebSocket): voi
 
     client.on("message", data => {
         if (!data) {
-            client.send({ error: 'message is empty' }, err => console.error('send error: ', err));
+            client.send(JSON.stringify({ error: 'message is empty' }), err => console.error('send error: ', err));
             return;
         }
 
@@ -119,21 +120,26 @@ function evtWebSockedConnected(server: WebSocket.Server, client: WebSocket): voi
         }
         catch (err) {
             console.error('message error: ', err)
-            client.send({ error: 'message is invalid' }, err => console.error('send error: ', err));
+            client.send(JSON.stringify({ error: 'message is invalid' }), err => console.error('send error: ', err));
             return;
         }
 
         if (!data.target || !data.content) {
-            client.send({ error: 'message target or content are empty' }, err => console.error('send error: ', err));
+            client.send(JSON.stringify({ error: 'message target or content are empty' }), err => console.error('send error: ', err));
             return;
         }
 
         if (data.target !== 'login' && data.target !== 'logout' && !client['session']) {
-            client.send({ error: 'session is invalid, login first' }, err => console.error('send error: ', err));
+            client.send(JSON.stringify({ target: data.target, action: data.action, error: 'session is invalid, login first' }), err => console.error('send error: ', err));
             return;
         }
 
-        message(data, ip, client);
+        var result = message(data, ip, client);
+        result.target = data.target;
+        result.content = result.content || {};
+        if (data.action) result.content.action = data.action;
+
+        client.send(JSON.stringify(result), err => console.error('send error: ', err));
     });
 
     client.on('open', function () {

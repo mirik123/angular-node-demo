@@ -49,8 +49,37 @@ export class appService implements IAppService {
         };
 
         this.ws.onmessage = evt => {
-            console.error('WebSocket message received: ', evt);
-            this.$rootScope.$emit(evt.data.target, evt.data.content);
+            console.log('WebSocket message received: ', evt);
+
+            if (!evt) {
+                console.error('message is empty');
+                return;
+            }
+
+            var data: { target?: string, error?: string, content?: any } = {};
+            try {
+                data = JSON.parse(evt.data);
+            }
+            catch (err) {
+                console.error('message error: ', err)
+                return;
+            }
+
+            if (data.error) {
+                console.error('message returned error: ', data.error);
+            }
+
+            if (!data.target) {
+                console.error('message target is empty', data);
+                return;
+            }
+
+            if (!data.content && !data.error) {
+                console.error('message content is empty', data);
+                data.error = 'message content is empty';
+            }
+
+            this.$rootScope.$emit(data.target, data);
         };
     }
 
@@ -59,13 +88,16 @@ export class appService implements IAppService {
     };
 
     public logout(reason:string = 'OK') {
-        this.ws.close(200, reason);
+        this.ws.close(1000, reason);
         this.permissions = '';
         this.username = '';
         this.title.value = '';       
     }
 
-    public send(target:string, content) {
-        this.ws.send({ target: target, content: content});
+    public send(target: string, content: any) {
+        var data = { target: target, content: content };
+
+        console.log('WebSocket message sent: ', data);
+        this.ws.send(JSON.stringify(data));
     }
 }

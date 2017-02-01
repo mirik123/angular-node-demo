@@ -24,7 +24,7 @@ export class userprofileCtrl {
         this.title = 'User Profile';
         this.maxDate = new Date();
 
-        if (!this.appService.isConnected) return;
+        if (!this.appService.isConnected || !appService.username) return;
 
         this.appService.title.value = this.title;
 
@@ -43,18 +43,18 @@ export class userprofileCtrl {
                 return;
             }
 
-            if (data.action === 'get') {
+            if (data.content.action === 'get') {
                 this.profilemodel = {
                     username: this.appService.username,
                     password: '',
-                    permissions: data.permissions,
-                    birthdate: moment.utc(data.birthdate).toDate(),
-                    email: data.email
+                    permissions: data.content.permissions,
+                    birthdate: moment.utc(data.content.birthdate).toDate(),
+                    email: data.content.email
                 };
 
                 console.log('get profile', data);
             }
-            else if (data.action === 'set') {
+            else if (data.content.action === 'set') {
                 console.log('updated profile', data);
 
                 this.$mdDialog.show(

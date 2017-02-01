@@ -11,11 +11,11 @@ import { IAppService } from './app.service';
 
 var app = angular.module('app', ['app.templates', 'ngAria', 'ngMaterial', 'ngMdIcons', 'ngMessages', "ui.router", "ngAnimate", 'md.data.table', 'ngCookies']);
 
-app.run(['$rootScope', 'appService', '$state', function ($rootScope, appService, $state) {
+app.run(['$rootScope', 'appService', '$state', function ($rootScope, appService: IAppService, $state) {
     //$rootScope._ = window._;
 
     $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
-        if (toState.name.indexOf('login') < 0 && !appService.authtoken) {
+        if (toState.name.indexOf('login') < 0 && (!appService.isConnected || !appService.username)) {
             event.preventDefault(); // stop current execution
             $state.go('login'); // go to login
         }

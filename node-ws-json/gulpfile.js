@@ -72,7 +72,7 @@ gulp.task('watch-express', ['server-express'], function () {
 });
 
 gulp.task('client', function () {
-    gulp.src('../basic-http-client/wwwroot/**/*.*')
+    gulp.src('../basic-ws-client/wwwroot/**/*.*')
         .pipe(gulp.dest('wwwroot/client'));
 });
 
