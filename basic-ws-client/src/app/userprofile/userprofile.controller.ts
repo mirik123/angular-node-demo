@@ -29,53 +29,60 @@ export class userprofileCtrl {
         this.appService.title.value = this.title;
 
 
-        var clearEvt = this.appService.$rootScope.$on('profile', (evt, data) => {
-            this.httpError = null;
+        var clearEvt1 = this.appService.$rootScope.$on('profile@get', this.OnMessage.bind(this));
+        var clearEvt2 = this.appService.$rootScope.$on('profile@set', this.OnMessage.bind(this));
 
-            if (!data) {
-                this.httpError = 'incorrect request';
-                return;
-            }
-
-            if (data.error) {
-                this.httpError = data.error;
-                console.error('profile error', data);
-                return;
-            }
-
-            if (data.content.action === 'get') {
-                this.profilemodel = {
-                    username: this.appService.username,
-                    password: '',
-                    permissions: data.content.permissions,
-                    birthdate: moment.utc(data.content.birthdate).toDate(),
-                    email: data.content.email
-                };
-
-                console.log('get profile', data);
-            }
-            else if (data.content.action === 'set') {
-                console.log('updated profile', data);
-
-                this.$mdDialog.show(
-                    this.$mdDialog.alert()
-                        .title('Info')
-                        .textContent('Profile has been updated')
-                        .ok('OK')
-                );
-            }
-            else {
-                this.httpError = 'unknown action';
-            }
+        $scope.$on("$destroy", () => {
+            clearEvt1();
+            clearEvt2();
         });
-
-        $scope.$on("$destroy", () => clearEvt());
 
         this.reload();
     }
 
+    OnMessage(evt, data) {
+        var action = evt.name.split('@')[1];
+        this.httpError = null;
+
+        if (!data) {
+            this.httpError = 'incorrect request';
+            return;
+        }
+
+        if (data.error) {
+            this.httpError = data.error;
+            console.error('profile error', data);
+            return;
+        }
+
+        if (action === 'get') {
+            this.profilemodel = {
+                username: this.appService.username,
+                password: '',
+                permissions: data.content.permissions,
+                birthdate: moment.utc(data.content.birthdate).toDate(),
+                email: data.content.email
+            };
+
+            console.log('get profile', data);
+        }
+        else if (action === 'set') {
+            console.log('updated profile', data);
+
+            this.$mdDialog.show(
+                this.$mdDialog.alert()
+                    .title('Info')
+                    .textContent('Profile has been updated')
+                    .ok('OK')
+            );
+        }
+        else {
+            this.httpError = 'unknown action: ' + action;
+        }
+    }
+
     reload() {
-        this.appService.send('profile', { action: 'get' });
+        this.appService.send('profile@get', {});
     }
 
     update() {
@@ -83,8 +90,7 @@ export class userprofileCtrl {
         this.profilemodel.password = '';
 
         model.birthdate = moment.utc(model.birthdate).format();
-        model['action'] = 'set';
 
-        this.appService.send('profile', model);
+        this.appService.send('profile@set', model);
     }
 }

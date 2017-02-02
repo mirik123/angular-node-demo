@@ -7,6 +7,10 @@ md-select {
     min-width: 150px;
 }
 
+ng-md-icon {
+    outline: 0;
+}
+
 ng-md-icon[disabled] svg {
     fill: rgba(0, 0, 0, 0.26);
 }

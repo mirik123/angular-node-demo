@@ -111,7 +111,7 @@ function evtWebSockedConnected(server: WebSocket.Server, client: WebSocket): voi
 
     client.on("message", data => {
         if (!data) {
-            client.send(JSON.stringify({ error: 'message is empty' }), err => console.error('send error: ', err));
+            client.send(JSON.stringify({ error: 'message is empty' }), err => { if (err) console.error('send error: ', err); });
             return;
         }
 
@@ -120,26 +120,25 @@ function evtWebSockedConnected(server: WebSocket.Server, client: WebSocket): voi
         }
         catch (err) {
             console.error('message error: ', err)
-            client.send(JSON.stringify({ error: 'message is invalid' }), err => console.error('send error: ', err));
+            client.send(JSON.stringify({ error: 'message is invalid' }), err => { if (err) console.error('send error: ', err); });
             return;
         }
 
         if (!data.target || !data.content) {
-            client.send(JSON.stringify({ error: 'message target or content are empty' }), err => console.error('send error: ', err));
+            client.send(JSON.stringify({ error: 'message target or content are empty' }), err => { if (err) console.error('send error: ', err); });
             return;
         }
 
         if (data.target !== 'login' && data.target !== 'logout' && !client['session']) {
-            client.send(JSON.stringify({ target: data.target, action: data.action, error: 'session is invalid, login first' }), err => console.error('send error: ', err));
+            client.send(JSON.stringify({ target: data.target, error: 'session is invalid, login first' }), err => { if (err) console.error('send error: ', err); });
             return;
         }
 
         var result = message(data, ip, client);
         result.target = data.target;
         result.content = result.content || {};
-        if (data.action) result.content.action = data.action;
 
-        client.send(JSON.stringify(result), err => console.error('send error: ', err));
+        client.send(JSON.stringify(result), err => { if (err) console.error('send error: ', err); });
     });
 
     client.on('open', function () {

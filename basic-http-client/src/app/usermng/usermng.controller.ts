@@ -67,6 +67,7 @@ export class usermngCtrl {
     showDetails(row) {
         var cprow = _.clone(row);
         delete cprow.$$hashKey;
+
         if (cprow.birthdate) cprow.birthdate = moment.utc(cprow.birthdate).format();
 
         this.$mdDialog.show({
@@ -116,9 +117,11 @@ export class usermngCtrl {
             });
     }
 
-    save(row) {        
+    save(row) {       
+        if (!this.tabledata.selected) return;
+         
         row = _.pick(row, ['username', 'password', 'permissions', 'email', 'birthdate']);
-        row.birthdate = moment.utc(row.birthdate).format();
+        if (row.birthdate) row.birthdate = moment.utc(row.birthdate).format();
 
         if (this.tabledata.selected.newrecord) {
             this.appService.http('/api/users', 'PUT', {}, row)

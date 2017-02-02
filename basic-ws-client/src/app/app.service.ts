@@ -14,6 +14,7 @@ export interface IAppService {
 
 export class appService implements IAppService {
     private ws: WebSocket;
+    private $state: ng.ui.IStateService;
 
     public $rootScope: ng.IRootScopeService;
     public title: any;
@@ -21,9 +22,10 @@ export class appService implements IAppService {
     public permissions: string = '';
     public host: string = 'ws://localhost:8080'; //'wss://localhost:8443';
 
-    static $inject = ['$rootScope'];
-    constructor($rootScope) {
+    static $inject = ['$rootScope', '$state'];
+    constructor($rootScope, $state) {
         this.$rootScope = $rootScope;
+        this.$state = $state;
         this.title = { value: '' };
 
         this.connect();
@@ -95,9 +97,26 @@ export class appService implements IAppService {
     }
 
     public send(target: string, content: any) {
-        var data = { target: target, content: content };
+        if (!this.isConnected) {
+            if (this.$state.current.name !== 'login') {                
+                this.$state.go('login');
+            }
+            else {
+                this.connect();
+                this.$rootScope.$emit(target, { error: 'server is disconnected, please try again' });
+            }
 
-        console.log('WebSocket message sent: ', data);
-        this.ws.send(JSON.stringify(data));
+            return;
+        }
+
+        try {
+            var data = { target: target, content: content };
+            console.log('WebSocket message sent: ', data);
+            this.ws.send(JSON.stringify(data));
+        }
+        catch (err) {
+            console.log('WebSocket message sent error: ', err);
+            this.$rootScope.$emit(target, { error: 'server error' });
+        }
     }
 }

@@ -3,7 +3,9 @@ import { Utils } from './utils';
 import WebSocket = require("ws");
 
 export function message(data: any, ip: string, client: WebSocket): { target?:string, error?:string, content?:any } {
-    switch (data.target) {
+    var session = null, action = '', target = data.target.split('@')[0];
+
+    switch (target) {
         case 'login':
             if (!data.content.username || !data.content.password) {
                 return { error: 'user or password are empty' };
@@ -28,8 +30,9 @@ export function message(data: any, ip: string, client: WebSocket): { target?:str
             return {};
 
         case 'profile':
-            var session = client['session'];
-            switch (data.content.action) {
+            session = client['session'];
+            action = data.target.split('@')[1];
+            switch (action) {
                 case 'get':
                     var dbres = Utils.getsingle(session.username);
                     if (!dbres[0]) {
@@ -64,8 +67,9 @@ export function message(data: any, ip: string, client: WebSocket): { target?:str
             }
 
         case 'users':
-            var session = client['session'];
-            switch (data.content.action) {
+            session = client['session'];
+            action = data.target.split('@')[1];
+            switch (action) {
                 case 'get':
                     if (session.permissions !== 'admin') {
                         return { error: 'this operation requires special permission' };

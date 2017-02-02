@@ -34,6 +34,8 @@ export class loginCtrl {
             return;
         }
 
+        if (!this.appService.isConnected) this.appService.connect();
+
         var clearEvt = this.appService.$rootScope.$on('login', (evt, data) => {
             if (!data) {
                 this.httpError = 'incorrect request';

@@ -74,14 +74,14 @@
                             </md-select>
                         </td>
                         <td md-cell ng-if="row===vm.tabledata.selected">
-                            <md-datepicker name="birthdate" ng-model="row.birthdate" md-max-date="vm.maxDate" required ng-attr-name="{{'birthdate'+$index}}"  class="invalid-border"></md-datepicker>
+                            <md-datepicker ng-model="row.birthdate" md-max-date="vm.maxDate" required ng-attr-name="{{'birthdate'+$index}}" md-placeholder="birth date" class="invalid-border"></md-datepicker>
                         </td>
                         <td md-cell ng-if="row===vm.tabledata.selected">
                             <input type="email" ng-model="row.email" required ng-attr-name="{{'email'+$index}}" maxlength="32"  class="invalid-border"/>
                         </td>
 
                         <td md-cell style="cursor:pointer;">
-                            <ng-md-icon md-ink-ripple="#333" icon="save" ng-click="vm.save(row)" ng-if="row===vm.tabledata.selected" ng-disabled="!usermngform.$dirty"><md-tooltip>Save current record</md-tooltip></ng-md-icon>
+                            <ng-md-icon md-ink-ripple="#333" icon="save" ng-click="!usermngform.$invalid && vm.save(row)" ng-if="row===vm.tabledata.selected" ng-disabled="!usermngform.$dirty || usermngform.$invalid"><md-tooltip>Save current record</md-tooltip></ng-md-icon>
                             <ng-md-icon md-ink-ripple="#333" icon="replay" ng-click="vm.undo()" ng-if="row===vm.tabledata.selected"><md-tooltip>Undo current record</md-tooltip></ng-md-icon>
                             <ng-md-icon md-ink-ripple="#333" icon="mode_edit" ng-click="vm.edit(row)" ng-if="row!==vm.tabledata.selected"><md-tooltip>Edit current record</md-tooltip></ng-md-icon>
                             <ng-md-icon md-ink-ripple="#333" icon="delete" ng-click="vm.remove(row)" ng-if="row!==vm.tabledata.selected && !vm.tabledata.selected.newrecord"><md-tooltip>Remove current record</md-tooltip></ng-md-icon>

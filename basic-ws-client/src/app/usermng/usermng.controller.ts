@@ -62,63 +62,76 @@ export class usermngCtrl {
 
         appService.title.value = this.title;
 
-        var clearEvt = this.appService.$rootScope.$on('users', (evt, data) => {
-            this.httpError = null;
+        var clearEvt1 = this.appService.$rootScope.$on('users@get', this.OnMessage.bind(this));
+        var clearEvt2 = this.appService.$rootScope.$on('users@set', this.OnMessage.bind(this));
+        var clearEvt3 = this.appService.$rootScope.$on('users@new', this.OnMessage.bind(this));
+        var clearEvt4 = this.appService.$rootScope.$on('users@delete', this.OnMessage.bind(this));
 
-            if (!data) {
-                this.httpError = 'incorrect request';
-                return;
-            }
-
-            if (data.error) {
-                this.httpError = data.error;
-                console.error('profile error', data);
-                return;
-            }
-
-            switch (data.content.action) {
-                case 'get':
-                    console.log('loaded users data', data);
-                    this.tabledata.table = data.content;
-
-                    _.each(this.tabledata.table, itm => { itm.birthdate = moment.utc(itm.birthdate).toDate(); });
-
-                    this.tabledata.selected = null;
-                    this.tabledata.selectedcopy = null;
-                    this.tabledata.page = 1;
-                    this.resetfilters();
-
-                case 'set':
-                    this.tabledata.selected = null;
-                    this.tabledata.selectedcopy = null;
-                    console.log('saved users data', data);
-
-                case 'new':
-                    delete this.tabledata.selected.newrecord;
-                    this.tabledata.selected = null;
-                    this.tabledata.selectedcopy = null;
-                    console.log('created new users data', data);
-
-                case 'delete':
-                    this.tabledata.selected = null;
-                    this.tabledata.selectedcopy = null;
-                    console.log('deleted users data', data);
-                    _.remove(this.tabledata.table, { username: data.content.username });
-
-                default:
-                    this.httpError = 'unknown action';
-            }
+        $scope.$on("$destroy", () => {
+            clearEvt1();
+            clearEvt2();
+            clearEvt3();
+            clearEvt4();
         });
 
-        $scope.$on("$destroy", () => clearEvt());
-
         this.reload();
+    }
+
+    OnMessage(evt, data) {
+        var action = evt.name.split('@')[1];
+        this.httpError = null;
+
+        if (!data) {
+            this.httpError = 'incorrect request';
+            return;
+        }
+
+        if (data.error) {
+            this.httpError = data.error;
+            console.error('profile error', data);
+            return;
+        }
+
+        switch (action) {
+            case 'get':
+                console.log('loaded users data', data);
+                this.tabledata.table = data.content;
+
+                _.each(this.tabledata.table, itm => { itm.birthdate = moment.utc(itm.birthdate).toDate(); });
+
+                this.tabledata.selected = null;
+                this.tabledata.selectedcopy = null;
+                this.tabledata.page = 1;
+                this.resetfilters();
+                break;
+
+            case 'set':
+                this.tabledata.selected = null;
+                this.tabledata.selectedcopy = null;
+                console.log('saved users data', data);
+                break;
+
+            case 'new':
+                this.tabledata.selected = null;
+                this.tabledata.selectedcopy = null;
+                console.log('created new users data', data);
+                break;
+
+            case 'delete':
+                this.tabledata.selected = null;
+                this.tabledata.selectedcopy = null;
+                console.log('deleted users data', data);
+                _.remove(this.tabledata.table, { username: data.content.username });
+                break;
+
+            default:
+                this.httpError = 'unknown action:' + action;
+        }
     }
 
     showDetails(row) {
         var cprow = _.clone(row);
         delete cprow.$$hashKey;
-        delete cprow.action;
 
         if (cprow.birthdate) cprow.birthdate = moment.utc(cprow.birthdate).format();
 
@@ -150,25 +163,25 @@ export class usermngCtrl {
 
     reload() {
         this.tabledata.table.length = 0;
-        this.appService.send('users', { action: 'get' });
+        this.appService.send('users@get', {});
     }
 
-    save(row) {        
+    save(row) {       
+        if (!this.tabledata.selected) return;
+         
         row = _.pick(row, ['username', 'password', 'permissions', 'email', 'birthdate']);
-        row.birthdate = moment.utc(row.birthdate).format();
+        if (row.birthdate) row.birthdate = moment.utc(row.birthdate).format();
 
         if (this.tabledata.selected.newrecord) {
-            row.action = 'new';
-            this.appService.send('users', row);
+            this.appService.send('users@new', row);
         }
         else {
-            row.action = 'set';
-            this.appService.send('users', row);
+            this.appService.send('users@set', row);
         }
     };
 
     remove(row) {
-        this.appService.send('users', { action: 'delete', username: row.username });
+        this.appService.send('users@delete', { username: row.username });
     }
 
     create() {
