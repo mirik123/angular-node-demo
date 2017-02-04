@@ -4,53 +4,68 @@ export interface IAppService {
     title: { value: string };
     username: string;
     permissions: string;
-    host: string;
-    isConnected: boolean;
+    readyState: number;
 
     connect();
-    logout(reason?:string);
+    disconnect();
     send(target:string, content);
 }
 
 export class appService implements IAppService {
     private ws: WebSocket;
+    private $http: ng.IHttpService;
     private $state: ng.ui.IStateService;
+    private $cookies: ng.cookies.ICookiesService;
 
     public $rootScope: ng.IRootScopeService;
     public title: any;
     public username: string = '';
     public permissions: string = '';
-    public host: string = 'ws://localhost:8080'; //'wss://localhost:8443';
+    public wsurl: string = 'ws://localhost:8080/ws'; //'wss://localhost:8443/ws';
+    public httpurl: string = 'http://localhost:8080/api'; //'https://localhost:8443/api';
 
-    static $inject = ['$rootScope', '$state'];
-    constructor($rootScope, $state) {
+    static $inject = ['$rootScope', '$state', '$http', '$cookies'];
+    constructor($rootScope, $state, $http, $cookies) {
         this.$rootScope = $rootScope;
         this.$state = $state;
+        this.$http = $http;
+        this.$cookies = $cookies;
         this.title = { value: '' };
-
-        this.connect();
     }
 
     public connect() {
-        if (this.isConnected) this.ws.close(200, 'planned close');
+        this.disconnect();
 
-        this.ws = new WebSocket(this.host);
-        this.ws.onopen = evt => {
+        if (!this.$cookies.get('connect.sid')) {
+            this.$http.get(this.httpurl)
+                .then(() => {
+                    this.ws = new WebSocket(this.wsurl);
+                    this.SetWSEvents(this.ws);
+                });
+        }
+        else {
+            this.ws = new WebSocket(this.wsurl);
+            this.SetWSEvents(this.ws);
+        }
+    }
+
+    private SetWSEvents(ws: WebSocket) {
+        ws.onopen = evt => {
             console.log('WebSocket connected: ', evt);
-            this.$rootScope.$emit('ws_open', evt);
+            this.$rootScope.$emit('websocket@open', evt);
         };
 
-        this.ws.onclose = evt => {
+        ws.onclose = evt => {
             console.log('WebSocket closed: ', evt);
-            this.$rootScope.$emit('ws_close', evt);
+            this.$rootScope.$emit('websocket@close', evt);
         };
 
-        this.ws.onerror = evt => {
+        ws.onerror = evt => {
             console.error('WebSocket error: ', evt);
-            this.$rootScope.$emit('ws_error', evt);
+            this.$rootScope.$emit('websocket@error', evt);
         };
 
-        this.ws.onmessage = evt => {
+        ws.onmessage = evt => {
             console.log('WebSocket message received: ', evt);
 
             if (!evt) {
@@ -85,27 +100,19 @@ export class appService implements IAppService {
         };
     }
 
-    public get isConnected() {
-        return this.ws && (this.ws.readyState === this.ws.OPEN || this.ws.readyState === this.ws.CONNECTING);
-    };
-
-    public logout(reason:string = 'OK') {
-        this.ws.close(1000, reason);
-        this.permissions = '';
-        this.username = '';
-        this.title.value = '';       
+    public disconnect() {
+        if (this.ws && this.ws.readyState !== WebSocket.CLOSED) this.ws.close(3001, 'planned close event');
     }
 
-    public send(target: string, content: any) {
-        if (!this.isConnected) {
-            if (this.$state.current.name !== 'login') {                
-                this.$state.go('login');
-            }
-            else {
-                this.connect();
-                this.$rootScope.$emit(target, { error: 'server is disconnected, please try again' });
-            }
+    public get readyState() {
+        return this.ws && this.ws.readyState;
+    };
 
+    public send(target: string, content: any) {
+        if (target === 'logout') this.$cookies.remove('connect.sid');
+
+        if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+            this.$rootScope.$emit(target, { error: 'server is disconnected' });
             return;
         }
 

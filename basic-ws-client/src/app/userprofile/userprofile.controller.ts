@@ -24,8 +24,6 @@ export class userprofileCtrl {
         this.title = 'User Profile';
         this.maxDate = new Date();
 
-        if (!this.appService.isConnected || !appService.username) return;
-
         this.appService.title.value = this.title;
 
 

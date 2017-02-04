@@ -2,11 +2,13 @@
 import { Utils } from './utils';
 import WebSocket = require("ws");
 
-export function message(data: any, ip: string, client: WebSocket): { target?:string, error?:string, content?:any } {
-    var session = null, action = '', target = data.target.split('@')[0];
+export function message(data: any, ip: string, session:any): { target?:string, error?:string, content?:any } {
+    var action = '', target = data.target.split('@')[0];
 
     switch (target) {
         case 'login':
+            if (session.username && session.permissions && !data.content.username) return { content: session };
+
             if (!data.content.username || !data.content.password) {
                 return { error: 'user or password are empty' };
             }
@@ -20,17 +22,13 @@ export function message(data: any, ip: string, client: WebSocket): { target?:str
                 return { error: dbres[1] };
             }
             else {
-                client['session'] = { username: dbres[1], permissions: dbres[2] };
-                return { content: client['session'] };
+                session.username = dbres[1];
+                session.permissions = dbres[2];
+
+                return { content: { username: dbres[1], permissions: dbres[2] } };
             }
 
-        case 'logout':
-            client['session'] = null;
-            client.close(200, { message: 'planned closure' });
-            return {};
-
         case 'profile':
-            session = client['session'];
             action = data.target.split('@')[1];
             switch (action) {
                 case 'get':
@@ -67,7 +65,6 @@ export function message(data: any, ip: string, client: WebSocket): { target?:str
             }
 
         case 'users':
-            session = client['session'];
             action = data.target.split('@')[1];
             switch (action) {
                 case 'get':
@@ -101,7 +98,7 @@ export function message(data: any, ip: string, client: WebSocket): { target?:str
                         return { error: dbres[1] };
                     }
                     else {
-                        return {};
+                        return { content: { username: data.content.username } };
                     }
 
                 case 'new':

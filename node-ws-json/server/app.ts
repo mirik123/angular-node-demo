@@ -5,13 +5,13 @@ import express = require('express');
 import https = require('https');
 import http = require('http');
 import path = require('path');
-var bodyParser = require('body-parser');
-var favicon = require('serve-favicon');
-//var cookieParser = require('cookie-parser');
-//var session = require('express-session');
-var morgan = require('morgan');
+import bodyParser = require('body-parser');
+import favicon = require('serve-favicon');
+//import cookieParser = require('cookie-parser');
+import session = require('express-session');
+import morgan = require('morgan');
 
-var url = require('url');
+import url = require('url');
 import WebSocket = require("ws");
 
 var fs = require('fs');
@@ -25,13 +25,15 @@ app.use(morgan('combined'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(__dirname + '/../wwwroot/client'));
-//app.use(cookieParser());
-/*app.use(session({
+//app.use(cookieParser('123456'));
+
+var sessionReq = session({
     secret: '123456',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true }
-}));*/
+    cookie: { maxAge: 3600000, secure: 'auto' }
+});
+app.use(sessionReq);
 
 // development only
 app.use(function (err, req: express.Request, res: express.Response, next) {
@@ -42,14 +44,54 @@ app.use(function (err, req: express.Request, res: express.Response, next) {
 
 app.use(function (req: express.Request, res: express.Response, next) {
     console.log(req.method + ' ' + req.url);
-	next();
+
+    if (req.method === 'OPTIONS') {
+        res.set('Access-Control-Request-Method', '*');
+        res.set('Access-Control-Allow-Origin', req.headers['origin']);
+        res.set('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+        //res.set('Access-Control-Allow-Headers', '*');
+        res.set('Access-Control-Allow-Credentials', 'true');
+
+        res.sendStatus(200);
+        return;
+    }
+
+    if (req.url === '/api') {
+        res.sendStatus(200);
+    }
+
+    next();
 });
 
 var httpsrv = http.createServer(app);
-var wsServer = new WebSocket.Server({ server: httpsrv });
+var wsServer = new WebSocket.Server({
+    server: httpsrv,
+    path: '/ws',
+    verifyClient: function (info: { origin: string; secure: boolean; req: http.IncomingMessage }, next) {
+        sessionReq(<express.Request>info.req, <express.Response>{}, function () {
+            var session = info.req['session'];
+            console.info('Session info', session);
+            //next(session && session.id && info.req.headers.cookie);
+
+            /*if (session) //check session
+            {
+                info.req.headers["set-cookie"] = session.SessionID; 
+            }
+            else {
+                //authenticate here
+            }*/
+
+            next(true);
+        });   
+    }
+});
+
 wsServer.on("connection", client => evtWebSockedConnected(wsServer, client)).on('error', function (err: Error) {
     console.error('WebSocket error', err);
 });
+/*wsServer.on('headers', headers => {
+    headers.push('Set-Cookie: connect.sid=1');
+});*/
 
 httpsrv.listen(8080, function () {
     console.log('Express server listening on port 8080 and folder: ' + __dirname + '/../wwwroot/client');
@@ -100,6 +142,12 @@ function evtWebSockedConnected(server: WebSocket.Server, client: WebSocket): voi
     if (!client) return;
     var ip = client.upgradeReq.socket.remoteAddress;
     var location = url.parse(client.upgradeReq.url, true);
+    var session: Express.Session;
+
+    sessionReq(<express.Request>client.upgradeReq, <express.Response>{}, function () {
+        session = client.upgradeReq['session'];
+    });
+
     // you might use location.query.access_token to authenticate or share sessions
     // or ws.upgradeReq.headers.cookie (see http://stackoverflow.com/a/16395220/151312)   
     //http://stackoverflow.com/questions/36842159/node-js-ws-and-express-session-how-to-get-session-object-from-ws-upgradereq
@@ -129,14 +177,24 @@ function evtWebSockedConnected(server: WebSocket.Server, client: WebSocket): voi
             return;
         }
 
-        if (data.target !== 'login' && data.target !== 'logout' && !client['session']) {
+        if (data.target !== 'login' && data.target !== 'logout' && !session['username']) {
             client.send(JSON.stringify({ target: data.target, error: 'session is invalid, login first' }), err => { if (err) console.error('send error: ', err); });
             return;
         }
 
-        var result = message(data, ip, client);
-        result.target = data.target;
-        result.content = result.content || {};
+        var result: any;
+        if (data.target === 'logout') {
+            result = { content: {}, target: 'logout' };
+            session.destroy(err => { if (err) console.error('destroy session error: ', err); });
+            //client.close(200, { message: 'planned closure' });
+        }
+        else {
+            result = message(data, ip, session);
+            result.target = data.target;
+            result.content = result.content || {}; 
+
+            session.save(err => { if (err) console.error('save session error: ', err); });
+        }
 
         client.send(JSON.stringify(result), err => { if (err) console.error('send error: ', err); });
     });

@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "body-parser": "registry:dt/body-parser#0.0.0+20160726204056",
+    "cookie-parser": "registry:dt/cookie-parser#1.3.4+20160428043022",
     "express": "registry:dt/express#4.0.0+20161115070701",
     "lodash": "registry:npm/lodash#4.0.0+20161015015725",
     "morgan": "registry:dt/morgan#1.7.0+20160726064905",

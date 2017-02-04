@@ -154,18 +154,28 @@ export class usermngCtrl {
     };
 
     remove(row) {
-        this.appService.http('/api/users/' + row.username, 'DELETE')
-            .then(dt => {
-                this.httpError = null;
-                this.tabledata.selected = null;
-                this.tabledata.selectedcopy = null;
-                console.log('deleted users data', dt.data);
-                _.remove(this.tabledata.table, { username: row.username });
-            },
-            dt => {
-                this.httpError = dt.data;
-                console.error('failed to delete users data', dt.data);
-            });
+        this.$mdDialog.show(
+            this.$mdDialog.confirm()
+                .cancel('No')
+                .ok('Yes')
+                .textContent('Are you sure you want to delete this user?')
+                .clickOutsideToClose(true)
+                .escapeToClose(true)
+        )
+        .then(() => {
+            this.appService.http('/api/users/' + row.username, 'DELETE')
+                .then(dt => {
+                    this.httpError = null;
+                    this.tabledata.selected = null;
+                    this.tabledata.selectedcopy = null;
+                    console.log('deleted users data', dt.data);
+                    _.remove(this.tabledata.table, { username: row.username });
+                },
+                dt => {
+                    this.httpError = dt.data;
+                    console.error('failed to delete users data', dt.data);
+                });
+        }); 
     }
 
     create() {

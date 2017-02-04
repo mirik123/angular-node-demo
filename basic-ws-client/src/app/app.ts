@@ -15,7 +15,7 @@ app.run(['$rootScope', 'appService', '$state', function ($rootScope, appService:
     //$rootScope._ = window._;
 
     $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
-        if (toState.name.indexOf('login') < 0 && (!appService.isConnected || !appService.username)) {
+        if (toState.name.indexOf('login') < 0 && !appService.username) {
             event.preventDefault(); // stop current execution
             $state.go('login'); // go to login
         }

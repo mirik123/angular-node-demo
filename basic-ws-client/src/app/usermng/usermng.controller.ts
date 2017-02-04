@@ -58,8 +58,6 @@ export class usermngCtrl {
         this.editmode = false;
         this.maxDate = new Date();
 
-        if (!this.appService.isConnected || !this.appService.username) return;
-
         appService.title.value = this.title;
 
         var clearEvt1 = this.appService.$rootScope.$on('users@get', this.OnMessage.bind(this));
@@ -181,7 +179,17 @@ export class usermngCtrl {
     };
 
     remove(row) {
-        this.appService.send('users@delete', { username: row.username });
+        this.$mdDialog.show(
+            this.$mdDialog.confirm()
+                .cancel('No')
+                .ok('Yes')
+                .textContent('Are you sure you want to delete this user?')
+                .clickOutsideToClose(true)
+                .escapeToClose(true)
+        )
+        .then(() => {
+            this.appService.send('users@delete', { username: row.username });
+        });         
     }
 
     create() {
