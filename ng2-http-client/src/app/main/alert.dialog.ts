@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
         </md-dialog-actions>`,
 })
 export class ConfirmDialog {
-
+    public okbtn: string;
     public title: string;
     public message: string;
 

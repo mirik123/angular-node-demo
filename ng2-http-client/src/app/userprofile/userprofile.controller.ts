@@ -1,5 +1,8 @@
 ﻿import * as _ from 'lodash';
 import { appService } from '../app.service';
+import { ConfirmDialog } from '../main/alert.dialog';
+
+
 import { Inject, Component, ViewContainerRef, OnInit } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
 import { Router } from '@angular/router';
@@ -21,7 +24,7 @@ export class userprofileCtrl implements OnInit {
         email: ''
     };
 
-    constructor(private $state: Router, private $appService: appService, private $mdDialog: MdDialog) {
+    constructor(private $state: Router, private $appService: appService, private $mdDialog: MdDialog, private confirmDialog: ConfirmDialog) {
         this.title = 'User Profile';
         this.maxDate = new Date();
 
@@ -66,12 +69,10 @@ export class userprofileCtrl implements OnInit {
                 this.httpError = null;
                 console.log('updated profile', data);
 
-                this.$mdDialog.open(
-                    this.$mdDialog.alert()
-                    .title('Info')
-                    .textContent('Profile has been updated') 
-                        .ok('OK')
-                );
+                var dialogRef = this.$mdDialog.open(ConfirmDialog);
+                dialogRef.componentInstance.title = 'Info';
+                dialogRef.componentInstance.message = 'Profile has been updated';
+                dialogRef.componentInstance.okbtn = 'OK';
             },
             err => {
                 this.httpError = err;                

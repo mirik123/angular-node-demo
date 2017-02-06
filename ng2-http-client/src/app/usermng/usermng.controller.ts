@@ -1,13 +1,19 @@
 ﻿import * as _ from 'lodash';
-import { IAppService } from '../app.service';
+import { appService } from '../app.service';
+import { ConfirmDialog } from '../main/alert.dialog';
 
-export class usermngCtrl {
-    title: string;
-    $state: ng.ui.IStateService;
-    $scope: any;
-    $stateParams: ng.ui.IStateParamsService;
-    $mdDialog: ng.material.IDialogService;
-    appService: IAppService;
+
+import { Inject, Component, ViewContainerRef, OnInit } from '@angular/core';
+import { Http, Headers, Response } from '@angular/http';
+import { Router } from '@angular/router';
+import { MdDialogRef, MdDialog, MdDialogConfig } from '@angular/material';
+
+@Component({
+    selector: 'usermng',
+    templateUrl: 'usermng.html'
+})
+export class usermngCtrl implements OnInit {
+    title: string;    
     editmode: boolean;
     httpError = null;
     maxDate: Date;
@@ -47,20 +53,17 @@ export class usermngCtrl {
         }        
     };
 
-    static $inject = ['$scope', '$state', 'appService', '$stateParams', '$mdDialog'];
-    constructor($scope, $state: ng.ui.IStateService, appService: IAppService, $stateParams: ng.ui.IStateParamsService, $mdDialog: ng.material.IDialogService) {
-        this.$state = $state;
-        this.$scope = $scope;
-        this.$stateParams = $stateParams;
-        this.$mdDialog = $mdDialog;
-        this.appService = appService;
+    constructor(private $state: Router, private appService: appService, private $stateParams: ng.ui.IStateParamsService, private $mdDialog: MdDialog, private confirmDialog: ConfirmDialog) {
         this.title = 'Users Management';
         this.editmode = false;
         this.maxDate = new Date();
 
         if (!this.appService.authtoken) return;
 
-        appService.title.value = this.title;
+        appService.title.value = this.title;        
+    }
+
+    ngOnInit() {
         this.reload();
     }
 
@@ -70,7 +73,7 @@ export class usermngCtrl {
 
         if (cprow.birthdate) cprow.birthdate = moment.utc(cprow.birthdate).format();
 
-        this.$mdDialog.show({
+        this.$mdDialog.open({
             clickOutsideToClose: true,
             template:
             `<table style="margin:10px;max-width:750px">
@@ -99,9 +102,9 @@ export class usermngCtrl {
     reload() {
         this.tabledata.table.length = 0;
         this.appService.http('/api/users', 'GET')
-            .then(dt => {
-                console.log('loaded users data', dt.data);
-                this.tabledata.table = dt.data;
+            .subscribe(dt => {
+                console.log('loaded users data', dt.json());
+                this.tabledata.table = dt.json();
                 this.httpError = null;
 
                 _.each(this.tabledata.table, itm => { itm.birthdate = moment.utc(itm.birthdate).toDate(); });
@@ -111,9 +114,9 @@ export class usermngCtrl {
                 this.tabledata.page = 1;
                 this.resetfilters();
             },
-            dt => {
-                this.httpError = dt.data;
-                console.error('failed to load users data', dt.data);
+            err => {
+                this.httpError = err;
+                console.error('failed to load users data', err);
             });
     }
 
@@ -125,36 +128,36 @@ export class usermngCtrl {
 
         if (this.tabledata.selected.newrecord) {
             this.appService.http('/api/users', 'PUT', {}, row)
-                .then(dt => {
+                .subscribe(dt => {
                     this.httpError = null;
 
                     delete this.tabledata.selected.newrecord;
                     this.tabledata.selected = null;
                     this.tabledata.selectedcopy = null;
-                    console.log('created new users data', dt.data);
+                    console.log('created new users data', dt.json());
                 },
-                dt => {
-                    this.httpError = dt.data;
-                    console.error('failed to create new users data', dt.data);
+                err => {
+                    this.httpError = err;
+                    console.error('failed to create new users data', err);
                 });
         }
         else {
             this.appService.http('/api/users', 'POST', {}, row)
-                .then(dt => {
+                .subscribe(dt => {
                     this.httpError = null;
                     this.tabledata.selected = null;
                     this.tabledata.selectedcopy = null;
-                    console.log('saved users data', dt.data);
+                    console.log('saved users data', dt.json());
                 },
-                dt => {
-                    this.httpError = dt.data;
-                    console.error('failed to save users data', dt.data);
+                err => {
+                    this.httpError = err;
+                    console.error('failed to save users data', err);
                 });
         }
     };
 
     remove(row) {
-        this.$mdDialog.show(
+        this.$mdDialog.open(
             this.$mdDialog.confirm()
                 .cancel('No')
                 .ok('Yes')
@@ -162,20 +165,21 @@ export class usermngCtrl {
                 .clickOutsideToClose(true)
                 .escapeToClose(true)
         )
-        .then(() => {
-            this.appService.http('/api/users/' + row.username, 'DELETE')
-                .then(dt => {
-                    this.httpError = null;
-                    this.tabledata.selected = null;
-                    this.tabledata.selectedcopy = null;
-                    console.log('deleted users data', dt.data);
-                    _.remove(this.tabledata.table, { username: row.username });
-                },
-                dt => {
-                    this.httpError = dt.data;
-                    console.error('failed to delete users data', dt.data);
-                });
-        }); 
+            .afterClosed()
+            .subscribe(() => {
+                this.appService.http('/api/users/' + row.username, 'DELETE')
+                    .subscribe(dt => {
+                        this.httpError = null;
+                        this.tabledata.selected = null;
+                        this.tabledata.selectedcopy = null;
+                        console.log('deleted users data', dt.json());
+                        _.remove(this.tabledata.table, { username: row.username });
+                    },
+                    err => {
+                        this.httpError = err;
+                        console.error('failed to delete users data', err);
+                    });
+            }); 
     }
 
     create() {
