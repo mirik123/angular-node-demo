@@ -11,6 +11,7 @@ import { MaterialModule } from '@angular/material';
 
 import { appService } from './app.service';
 import { mainCtrl } from './main/main.controller';
+import { AlertDialog, ConfirmDialog, DataDialog } from './main/dialogs';
 import { loginCtrl } from './login/login.controller';
 import { usermngCtrl } from './usermng/usermng.controller';
 import { userprofileCtrl } from './userprofile/userprofile.controller';
@@ -52,7 +53,7 @@ import { sidenavDd } from './sidenav/sidenav.directive';
         ], { enableTracing: true })
     ],
     providers: [appService],
-    declarations: [loginCtrl, usermngCtrl, userprofileCtrl, sidenavCtrl, sidenavDd],
+    declarations: [loginCtrl, usermngCtrl, userprofileCtrl, sidenavCtrl, sidenavDd, AlertDialog, ConfirmDialog, DataDialog],
     bootstrap: [mainCtrl]
 })
 export class AppModule { }

@@ -1,39 +1,16 @@
-﻿
-export class sidenavDd implements ng.IComponentOptions {
-    title: string;
+﻿import * as _ from 'lodash';
 
-    static $inject = ['$state'];
-    constructor($state) {
-        this.title = 'HEADER';
-    }
+import { Inject, Component, ViewContainerRef, OnInit } from '@angular/core';
 
-    controller = sidenavDdCtrl;
-    controllerAs = 'vm';
-    bindings = {
-        options: '=',
-    };
-    template = `<h1>{{vm.options}}</h1>`;
-}
+@Component({
+    selector: 'sidenav-dd',
+    template: `<h1>{{options}}</h1>`,
+    inputs: ['options']
+})
+export class sidenavDd {
+    public options: string;
 
-class sidenavDdCtrl {
-    static $inject = ['$scope', '$element', '$attrs'];
     constructor($scope, $element, $attrs) { 
         $scope.title = 'DIRECTIVE';
-    }
-
-    $onInit() { 
-
-    }
-
-    $onChanges(changesObj) {
-
-    }
-
-    $doCheck() {
-
-    }
-
-    $onDestroy() {
-
     }
 }

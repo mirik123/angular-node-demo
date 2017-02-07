@@ -1,11 +1,8 @@
 ﻿import * as _ from 'lodash';
 import { appService } from '../app.service';
-import { ConfirmDialog } from '../main/alert.dialog';
-
+import { ConfirmDialog, DataDialog } from '../main/dialogs';
 
 import { Inject, Component, ViewContainerRef, OnInit } from '@angular/core';
-import { Http, Headers, Response } from '@angular/http';
-import { Router } from '@angular/router';
 import { MdDialogRef, MdDialog, MdDialogConfig } from '@angular/material';
 
 @Component({
@@ -53,12 +50,10 @@ export class usermngCtrl implements OnInit {
         }        
     };
 
-    constructor(private $state: Router, private appService: appService, private $stateParams: ng.ui.IStateParamsService, private $mdDialog: MdDialog, private confirmDialog: ConfirmDialog) {
+    constructor(private appService: appService, private $mdDialog: MdDialog) {
         this.title = 'Users Management';
         this.editmode = false;
         this.maxDate = new Date();
-
-        if (!this.appService.authtoken) return;
 
         appService.title.value = this.title;        
     }
@@ -73,22 +68,10 @@ export class usermngCtrl implements OnInit {
 
         if (cprow.birthdate) cprow.birthdate = moment.utc(cprow.birthdate).format();
 
-        this.$mdDialog.open({
-            clickOutsideToClose: true,
-            template:
-            `<table style="margin:10px;max-width:750px">
-                <tr ng-repeat="(key,val) in content">
-                    <td style="padding-right:5px"><b>{{key}}</b></td>
-                    <td><pre>{{val}}</pre></td>
-                </tr>
-            </table>`,
-            locals: {
-                content: cprow
-            },
-            controller: <any>['$scope', 'content', function ($scope, content) {
-                $scope['content'] = content;
-            }]
-        });
+        var dialogRef = this.$mdDialog.open(DataDialog);
+        dialogRef.componentInstance.title = 'Info';
+        dialogRef.componentInstance.content = cprow;
+        dialogRef.componentInstance.okbtn = 'OK';
     }
 
     resetfilters() {
@@ -157,15 +140,12 @@ export class usermngCtrl implements OnInit {
     };
 
     remove(row) {
-        this.$mdDialog.open(
-            this.$mdDialog.confirm()
-                .cancel('No')
-                .ok('Yes')
-                .textContent('Are you sure you want to delete this user?')
-                .clickOutsideToClose(true)
-                .escapeToClose(true)
-        )
-            .afterClosed()
+        var dialogRef = this.$mdDialog.open(ConfirmDialog);
+        dialogRef.componentInstance.title = 'Confirmation';
+        dialogRef.componentInstance.message = 'Are you sure you want to delete this user?';
+        dialogRef.componentInstance.okbtn = 'Yes';
+        dialogRef.componentInstance.cancelbtn = 'No';
+        dialogRef.afterClosed()
             .subscribe(() => {
                 this.appService.http('/api/users/' + row.username, 'DELETE')
                     .subscribe(dt => {
