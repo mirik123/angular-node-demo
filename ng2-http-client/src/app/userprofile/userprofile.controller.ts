@@ -4,7 +4,6 @@ import { AlertDialog } from '../main/dialogs';
 
 
 import { Inject, Component, ViewContainerRef, OnInit } from '@angular/core';
-import { Http, Headers, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { MdDialogRef, MdDialog, MdDialogConfig } from '@angular/material';
 

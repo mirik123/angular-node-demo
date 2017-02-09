@@ -1,7 +1,7 @@
 ﻿import * as _ from 'lodash';
 import { appService } from '../app.service';
 import { Inject, Component, OnInit } from '@angular/core';
-import { Http, Headers, Response } from '@angular/http';
+import { Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 import { Cookie } from 'ng2-cookies';
