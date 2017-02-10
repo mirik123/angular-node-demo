@@ -2,12 +2,52 @@
 import { appService } from '../app.service';
 import { ConfirmDialog, DataDialog } from '../main/dialogs';
 
-import { Inject, Component, ViewContainerRef, OnInit } from '@angular/core';
+import { Inject, Component, OnInit, Pipe, PipeTransform, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { MdDialogRef, MdDialog, MdDialogConfig } from '@angular/material';
 
+@Pipe({
+    name: 'myfilter',
+    pure: false
+})
+export class filterPipe implements PipeTransform {
+    private cachedOrder: string;
+    private cachedSearch: any;
+    private cachedData: any[];
+    private cachedDataChanged: number;
+
+    transform(items: any[], searchform: any, order: string, dtchanged: number): any[] {
+        if (!items || !searchform && !order) {
+            this.cachedData = items;
+            this.cachedSearch = _.clone(searchform);
+            this.cachedOrder = order;
+            this.cachedDataChanged = dtchanged;
+            return items;
+        }
+
+        if (order !== this.cachedOrder || !_.isEqual(searchform, this.cachedSearch) || dtchanged !== this.cachedDataChanged) {
+            this.cachedData = _(items)
+                .filter(row =>
+                    (!searchform.username || !row.username || row.username.toLowerCase().indexOf(searchform.username.toLowerCase()) > -1) &&
+                    (!searchform.permissions || !row.permissions || row.permissions.toLowerCase().indexOf(searchform.permissions.toLowerCase()) > -1) &&
+                    (!searchform.email || !row.email || row.email.toLowerCase().indexOf(searchform.email.toLowerCase()) > -1) &&
+                    (!searchform.birthdateFrom || !row.birthdate || moment(searchform.birthdateFrom).isSameOrBefore(row.birthdate, 'day')) &&
+                    (!searchform.birthdateTo || !row.birthdate || moment(searchform.birthdateTo).isSameOrAfter(row.birthdate, 'day')))
+                .sortBy(['newrecord', order])
+                .value();
+
+            this.cachedSearch = _.clone(searchform);
+            this.cachedOrder = order;
+            this.cachedDataChanged = dtchanged;
+        }
+
+        return this.cachedData;
+    }
+}
+
 @Component({
-    selector: 'usermng',
-    templateUrl: 'usermng.html'
+    selector: 'usermng-ctrl',
+    templateUrl: 'usermng.html',
+    //changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class usermngCtrl implements OnInit {
     title: string;    
@@ -17,7 +57,19 @@ export class usermngCtrl implements OnInit {
 
     tabledata = {
         table: [],
-        filtered: [],
+        filtered: {
+            get: () => {
+                return _(this.tabledata.table)
+                    .filter(row =>
+                        (!this.searchform.username || !row.username || row.username.toLowerCase().indexOf(this.searchform.username.toLowerCase()) > -1) &&
+                        (!this.searchform.permissions || !row.permissions || row.permissions.toLowerCase().indexOf(this.searchform.permissions.toLowerCase()) > -1) &&
+                        (!this.searchform.email || !row.email || row.email.toLowerCase().indexOf(this.searchform.email.toLowerCase()) > -1) &&
+                        (!this.searchform.birthdateFrom || !row.birthdate || moment(this.searchform.birthdateFrom).isSameOrBefore(row.birthdate, 'day')) &&
+                        (!this.searchform.birthdateTo || !row.birthdate || moment(this.searchform.birthdateTo).isSameOrAfter(row.birthdate, 'day')))
+                    .sortBy(['newrecord', this.tabledata.order])
+                    .value();
+            }
+        },
         selected: null,
         selectedcopy: null,
         get count() {
@@ -39,18 +91,10 @@ export class usermngCtrl implements OnInit {
         permissions: '',
         birthdateFrom: null,
         birthdateTo: null,
-        email: '',
-
-        filter: (row) => {
-            return (!this.searchform.username || !row.username || row.username.toLowerCase().indexOf(this.searchform.username.toLowerCase()) > -1) &&
-                (!this.searchform.permissions || !row.permissions || row.permissions.toLowerCase().indexOf(this.searchform.permissions.toLowerCase()) > -1) &&
-                (!this.searchform.email || !row.email || row.email.toLowerCase().indexOf(this.searchform.email.toLowerCase()) > -1) &&
-                (!this.searchform.birthdateFrom || !row.birthdate || moment(this.searchform.birthdateFrom).isSameOrBefore(row.birthdate, 'day')) &&
-                (!this.searchform.birthdateTo || !row.birthdate || moment(this.searchform.birthdateTo).isSameOrAfter(row.birthdate, 'day'));
-        }        
+        email: ''   
     };
 
-    constructor(private appService: appService, private $mdDialog: MdDialog) {
+    constructor(private appService: appService, private $mdDialog: MdDialog, private cd: ChangeDetectorRef) {
         this.title = 'Users Management';
         this.editmode = false;
         this.maxDate = new Date();
@@ -60,6 +104,11 @@ export class usermngCtrl implements OnInit {
 
     ngOnInit() {
         this.reload();
+    }
+
+    RerenderView() {
+        this.cd.detectChanges();
+        this.cd.markForCheck();
     }
 
     showDetails(row) {

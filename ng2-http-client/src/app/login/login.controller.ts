@@ -1,14 +1,14 @@
 ﻿import * as _ from 'lodash';
 import { appService } from '../app.service';
 import { Inject, Component, OnInit } from '@angular/core';
-import { Headers } from '@angular/http';
+import { Headers, Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 import { Cookie } from 'ng2-cookies';
 
 @Component({
     selector: 'login-ctrl',
-    templateUrl: 'login.html' 
+    templateUrl: 'login.html'
 })
 export class loginCtrl implements OnInit {
     title: string;
@@ -18,7 +18,7 @@ export class loginCtrl implements OnInit {
         password: ''
     };
 
-    constructor(private $state: Router, private appService: appService) {
+    constructor(private $state: Router, private appService: appService, private $http: Http) {
         this.title = 'LOGIN';
         this.appService.title.value = '';
     }

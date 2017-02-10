@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { Cookie } from 'ng2-cookies';
 
 @Component({
-    selector: 'sidenav',
+    selector: 'sidenav-ctrl',
     templateUrl: 'sidenav.html'
 })
 export class sidenavCtrl {

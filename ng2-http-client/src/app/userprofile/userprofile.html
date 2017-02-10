@@ -1,10 +1,10 @@
 ﻿
-<md-content layout-fill layout="column" layout-align="center center">
+<div md-content layout-fill layout="column" layout-align="center center">
     <div flex>&nbsp;</div>
     <form flex="50" #profileform="ngForm" style="width:50%;min-height:350px">
         <md-card flex layout-fill>
             <md-card-header>
-                <md-card-header-text><span class="md-title">User Profile</span></md-card-header-text>
+                <md-card-title><span class="md-title">User Profile</span></md-card-title>
             </md-card-header>
             <md-card-content flex layout="column">
                 <md-grid-list layout-fill md-cols="2" md-gutter="1em" md-row-height="fit">
@@ -19,7 +19,7 @@
                     </md-grid-tile>
                     <md-grid-tile>
                         <md-input-container class="md-block">
-                            <input name="userpass" onbind-ngModel="profilemodel.password" type="password" maxlength="32" minlength="2" />
+                            <input name="userpass" [(ngModel)]="profilemodel.password" type="password" maxlength="32" minlength="2" />
                             <div ng-messages="profileform.userpass.$error" role="alert" ng-messages-multiple md-auto-hide="false">
                                 <div ng-messages-include="error-messages"></div>
                             </div>
@@ -36,7 +36,7 @@
                     </md-grid-tile>
                     <md-grid-tile>
                         <md-input-container class="md-block">
-                            <md-datepicker name="birthdate" onbind-ngModel="profilemodel.birthdate" md-placeholder="birth date" md-max-date="maxDate" required style="display:block"></md-datepicker>
+                            <md-datepicker name="birthdate" [(ngModel)]="profilemodel.birthdate" md-placeholder="birth date" md-max-date="maxDate" required style="display:block"></md-datepicker>
                             <div ng-messages="profileform.birthdate.$error" role="alert" ng-messages-multiple md-auto-hide="false">
                                 <div ng-messages-include="error-messages"></div>
                             </div>
@@ -47,7 +47,7 @@
                     </md-grid-tile>
                     <md-grid-tile>
                         <md-input-container class="md-block">
-                            <input name="useremail" onbind-ngModel="profilemodel.email" type="email" required maxlength="32" />
+                            <input name="useremail" [(ngModel)]="profilemodel.email" type="email" required maxlength="32" />
                             <div ng-messages="profileform.useremail.$error" role="alert" ng-messages-multiple md-auto-hide="false">
                                 <div ng-messages-include="error-messages"></div>
                             </div>
@@ -59,9 +59,9 @@
                 </div>
             </md-card-content>
             <md-card-actions layout="row" style="margin-top:0" layout-align="space-between center">
-                <md-button class="md-block md-raised" type="submit" bind-disabled="profileform.$invalid || !profileform.$dirty" on-click="update()">Update</md-button>
+                <button md-button class="md-block md-raised" type="submit" [disabled]="profileform.$invalid || !profileform.$dirty" on-click="update()">Update</button>
             </md-card-actions>
         </md-card>
     </form>
     <div flex>&nbsp;</div>
-</md-content>
+</div>

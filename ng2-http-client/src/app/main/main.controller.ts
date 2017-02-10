@@ -1,9 +1,10 @@
 ﻿import * as _ from 'lodash';
 import { Inject, Component } from '@angular/core';
+import { Router, NavigationStart } from '@angular/router';
 import { appService } from '../app.service';
 
 @Component({
-    selector: 'main',
+    selector: 'main-ctrl',
     template: `<div>
             <script type="text/ng-template" id="error-messages">
                 <div ng-message="required">This field is required</div>
@@ -15,15 +16,21 @@ import { appService } from '../app.service';
             </script>
 
             <router-outlet name="mainview" layout-fill></router-outlet>
-        </div>`,
-    styleUrls: [
-        'app.scss'
-    ]
+        </div>`
 })
 export class mainCtrl {
     title: string;
 
-    constructor(private appService: appService) {
+    constructor(private appService: appService, private router: Router) {
         this.title = 'MAIN';
+
+        router.events.subscribe(evt => {
+            if (event instanceof NavigationStart) {
+                if ((<NavigationStart>event).url.indexOf('login') < 0 && !appService.authtoken) {
+                    event.preventDefault(); // stop current execution
+                    router.navigateByUrl('/login'); // go to login
+                }
+            }
+        });
     }
 }

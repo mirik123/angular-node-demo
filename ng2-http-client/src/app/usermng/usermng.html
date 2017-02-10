@@ -1,25 +1,22 @@
 ﻿
-<md-content flex layout="column" layout-align="center center">
+<div md-content flex layout="column" layout-align="center center">
     <div flex layout="row">
-        <md-table-pagination md-limit="tabledata.limit" md-limit-options="tabledata.limitoptions" md-page="tabledata.page"
-                             md-total="{{tabledata.count}}" md-page-select md-boundary-links>
-        </md-table-pagination>
+        <div md-table-pagination md-limit="tabledata.limit" md-limit-options="tabledata.limitoptions" md-page="tabledata.page"
+             md-total="tabledata.count" md-page-select md-boundary-links>
+        </div>
         <span>&nbsp;</span>
-        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="replay" on-click="reset()">
-            <md-tooltip>Reset filters</md-tooltip>
+        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="replay" on-click="reset()" mdTooltip="Reset filters">
         </md-icon>        
-        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="create" on-click="create()">
-            <md-tooltip>Create new record</md-tooltip>
+        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="create" on-click="create()" mdTooltip="Create new record">
         </md-icon>
-        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="autorenew" on-click="reload()">
-            <md-tooltip>Reload data</md-tooltip>
+        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="autorenew" on-click="reload()" mdTooltip="Reload data">
         </md-icon>
     </div>
     <div ng-messages="{error: !!httpError}" role="alert">
         <div ng-message="error">{{httpError.error || httpError}}</div>
     </div>
-    <form name="usermngform">
-        <md-table-container>
+    <form #usermngform="ngForm">
+        <div md-table-container>
             <table md-table>
                 <thead md-head md-order="tabledata.order">
                     <tr md-row>
@@ -32,29 +29,29 @@
                     </tr>
                     <tr md-row>
                         <th md-column>
-                            <input onbind-ngModel="searchform.username" bind-ngModelOptions="{ updateOn: 'default', getterSetter: true}" type="text" maxlength="32" />
+                            <input [(ngModel)]="searchform.username" [ngModelOptions]="{ updateOn: 'default', getterSetter: true}" type="text" maxlength="32" />
                         </th>
                         <th md-column>&nbsp;</th>
                         <th md-column>
-                            <md-select onbind-ngModel="searchform.permissions">
+                            <md-select [(ngModel)]="searchform.permissions">
                                 <md-option value="">(All)</md-option>
                                 <md-option value="user">User</md-option>
                                 <md-option value="admin">Administrator</md-option>
                             </md-select>
                         </th>
                         <th md-column>
-                            <md-datepicker name="birthdateFrom" onbind-ngModel="searchform.birthdateFrom" md-max-date="searchform.birthdateTo" md-placeholder="date from" style="display:block"></md-datepicker>
-                            <md-datepicker name="birthdateTo" onbind-ngModel="searchform.birthdateTo" md-min-date="searchform.birthdateFrom" md-max-date="maxDate" md-placeholder="date to" style="display:block"></md-datepicker>
+                            <md-datepicker name="birthdateFrom" [(ngModel)]="searchform.birthdateFrom" md-max-date="searchform.birthdateTo" md-placeholder="date from" style="display:block"></md-datepicker>
+                            <md-datepicker name="birthdateTo" [(ngModel)]="searchform.birthdateTo" md-min-date="searchform.birthdateFrom" md-max-date="maxDate" md-placeholder="date to" style="display:block"></md-datepicker>
                         </th>
                         <th md-column>
-                            <input onbind-ngModel="searchform.email" bind-ngModelOptions="{ updateOn: 'default', getterSetter: true}" type="text" maxlength="32" />
+                            <input [(ngModel)]="searchform.email" [ngModelOptions]="{ updateOn: 'default', getterSetter: true}" type="text" maxlength="32" />
                         </th>
                         <th md-column>&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody md-body>
                     <tr md-row on-dblclick="showDetails(row)"
-                        *ngFor="let row in tabledata.filtered = (tabledata.table | filter: searchform.filter) | orderBy: ['newrecord', tabledata.order] | limitTo: tabledata.limit : (tabledata.page -1) * tabledata.limit track by row.username">
+                        *ngFor="let row of tabledata.filtered | slice: (tabledata.page -1) * tabledata.limit : tabledata.limit; let $index=index; trackBy: row.username">
                         <td md-cell *ngIf="row!==tabledata.selected || !tabledata.selected.newrecord">{{row.username}}</td>
                         <td md-cell *ngIf="row!==tabledata.selected">***</td>
                         <td md-cell *ngIf="row!==tabledata.selected">{{row.permissions==='admin' ? 'Administrator' : 'User'}}</td>
@@ -62,33 +59,33 @@
                         <td md-cell *ngIf="row!==tabledata.selected">{{row.email}}</td>
 
                         <td md-cell *ngIf="row===tabledata.selected && tabledata.selected.newrecord">
-                            <input type="text" onbind-ngModel="row.username" required name="{{'user'+$index}}" maxlength="32" class="invalid-border"/>
+                            <input type="text" [(ngModel)]="row.username" required name="{{'user'+$index}}" maxlength="32" class="invalid-border"/>
                         </td>
                         <td md-cell *ngIf="row===tabledata.selected">
-                            <input type="password" onbind-ngModel="row.password" name="{{'pass'+$index}}" maxlength="32" minlength="2" class="invalid-border" />
+                            <input type="password" [(ngModel)]="row.password" name="{{'pass'+$index}}" maxlength="32" minlength="2" class="invalid-border" />
                         </td>
                         <td md-cell *ngIf="row===tabledata.selected">
-                            <md-select onbind-ngModel="row.permissions" name="{{'perms'+$index}}" required>
+                            <md-select [(ngModel)]="row.permissions" name="{{'perms'+$index}}" required>
                                 <md-option value="user">User</md-option>
                                 <md-option value="admin">Administrator</md-option>
                             </md-select>
                         </td>
                         <td md-cell *ngIf="row===tabledata.selected">
-                            <md-datepicker onbind-ngModel="row.birthdate" md-max-date="maxDate" required name="{{'birthdate'+$index}}" md-placeholder="birth date" class="invalid-border"></md-datepicker>
+                            <md-datepicker [(ngModel)]="row.birthdate" md-max-date="maxDate" required name="{{'birthdate'+$index}}" md-placeholder="birth date" class="invalid-border"></md-datepicker>
                         </td>
                         <td md-cell *ngIf="row===tabledata.selected">
-                            <input type="email" onbind-ngModel="row.email" required name="{{'email'+$index}}" maxlength="32"  class="invalid-border"/>
+                            <input type="email" [(ngModel)]="row.email" required name="{{'email'+$index}}" maxlength="32"  class="invalid-border"/>
                         </td>
 
                         <td md-cell style="cursor:pointer;">
-                            <md-icon md-ink-ripple="#333" icon="save" on-click="!usermngform.$invalid && save(row)" *ngIf="row===tabledata.selected" bind-disabled="!usermngform.$dirty || usermngform.$invalid"><md-tooltip>Save current record</md-tooltip></md-icon>
-                            <md-icon md-ink-ripple="#333" icon="replay" on-click="undo()" *ngIf="row===tabledata.selected"><md-tooltip>Undo current record</md-tooltip></md-icon>
-                            <md-icon md-ink-ripple="#333" icon="mode_edit" on-click="edit(row)" *ngIf="row!==tabledata.selected"><md-tooltip>Edit current record</md-tooltip></md-icon>
-                            <md-icon md-ink-ripple="#333" icon="delete" on-click="remove(row)" *ngIf="row!==tabledata.selected && !tabledata.selected.newrecord"><md-tooltip>Remove current record</md-tooltip></md-icon>
+                            <md-icon md-ink-ripple="#333" icon="save" on-click="!usermngform.$invalid && save(row)" *ngIf="row===tabledata.selected" [attr.disabled]="!usermngform.$dirty || usermngform.$invalid" mdTooltip="Save current record"></md-icon>
+                            <md-icon md-ink-ripple="#333" icon="replay" on-click="undo()" *ngIf="row===tabledata.selected" mdTooltip="Undo current record<"></md-icon>
+                            <md-icon md-ink-ripple="#333" icon="mode_edit" on-click="edit(row)" *ngIf="row!==tabledata.selected" mdTooltip="Edit current record"></md-icon>
+                            <md-icon md-ink-ripple="#333" icon="delete" on-click="remove(row)" *ngIf="row!==tabledata.selected && !tabledata.selected.newrecord" mdTooltip="Remove current record"></md-icon>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </md-table-container>
+        </div>
     </form>
-</md-content>
+</div>

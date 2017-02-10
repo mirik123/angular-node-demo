@@ -1,23 +1,23 @@
 ﻿
-<md-content layout-fill layout="column" layout-align="center center">
+<div md-content layout-fill layout="column" layout-align="center center">
     <div flex>&nbsp;</div>
     <form flex #loginform="ngForm">
         <md-card flex>
             <md-card-header>
-                <md-card-header-text><span class="md-title">Login</span></md-card-header-text>
+                <md-card-title><span class="md-title">Login</span></md-card-title>
             </md-card-header>
             <md-card-content flex layout="column">
                 <div flex layout="row">
                     <md-input-container class="md-block">
                         <label>Username </label>
-                        <input name="username" onbind-ngModel="loginmodel.username" required maxlength="32" />
+                        <input name="username" [(ngModel)]="loginmodel.username" required maxlength="32" />
                         <div ng-messages="loginform.username.$error" role="alert" multiple md-auto-hide="false">
                             <div ng-messages-include="error-messages"></div>
                         </div>
                     </md-input-container>
                     <md-input-container class="md-block">
                         <label>Password</label>
-                        <input name="userpass" onbind-ngModel="loginmodel.password" type="password" required maxlength="32" minlength="2" />
+                        <input name="userpass" [(ngModel)]="loginmodel.password" type="password" required maxlength="32" minlength="2" />
                         <div ng-messages="loginform.userpass.$error" role="alert" multiple md-auto-hide="false">
                             <div ng-messages-include="error-messages"></div>
                         </div>
@@ -28,9 +28,9 @@
                 </div>
             </md-card-content>
             <md-card-actions layout="row" style="margin-top:0" layout-align="space-between center">
-                <md-button class="md-block md-raised" type="submit" bind-disabled="loginform.$invalid" on-click="login()">Login</md-button>
+                <button md-button class="md-block md-raised" type="submit" [disabled]="loginform.$invalid" (click)="login()">Login</button>
             </md-card-actions>
         </md-card>
     </form>
     <div flex>&nbsp;</div>
-</md-content>
+</div>

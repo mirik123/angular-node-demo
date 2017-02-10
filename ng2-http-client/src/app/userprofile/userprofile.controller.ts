@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { MdDialogRef, MdDialog, MdDialogConfig } from '@angular/material';
 
 @Component({
-    selector: 'userprofile',
+    selector: 'userprofile-ctrl',
     templateUrl: 'userprofile.html'
 })
 export class userprofileCtrl implements OnInit {
@@ -27,13 +27,13 @@ export class userprofileCtrl implements OnInit {
         this.title = 'User Profile';
         this.maxDate = new Date();
 
-        if (!this.$appService.authtoken) return;
-
         this.$appService.title.value = this.title;        
     }
 
     ngOnInit() {
-        this.reload();
+        if (this.$appService.authtoken) {
+            this.reload();
+        }
     }
 
     reload() {

@@ -4,6 +4,7 @@
 import * as _  from 'lodash';
 import { NgModule, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { Routes, RouterModule } from '@angular/router';
@@ -20,10 +21,31 @@ import { sidenavDd } from './sidenav/sidenav.directive';
 
 @NgModule({
     imports: [
+        HttpModule,
         BrowserModule,
         FormsModule,
         MaterialModule.forRoot(),
         RouterModule.forRoot([
+            {
+                outlet: 'mainview',
+                path: 'login',
+                component: loginCtrl
+            },
+            {
+                outlet: 'mainview',
+                path: 'sidenav',
+                component: sidenavCtrl,
+                children: [{
+                    outlet: 'sidenav',
+                    path: 'userprofile',
+                    component: userprofileCtrl
+                },
+                {
+                    outlet: 'sidenav',
+                    path: 'usermng/:username',
+                    component: usermngCtrl
+                }]
+            },
             {
                 outlet: 'mainview',
                 path: '',
@@ -31,51 +53,19 @@ import { sidenavDd } from './sidenav/sidenav.directive';
                 pathMatch: 'full'
             },
             {
+                path: '**',
                 outlet: 'mainview',
-                path: '/login',
-                component: loginCtrl
-            },
-            {
-                outlet: 'mainview',
-                path: '/sidenav',
-                component: sidenavCtrl,
-                children: [{
-                    outlet: 'sidenav',
-                    path: '/userprofile',
-                    component: userprofileCtrl
-                },
-                {
-                    outlet: 'sidenav',
-                    path: '/usermng/:username',
-                    component: usermngCtrl
-                }]
+                redirectTo: '/login'
             }
         ], { enableTracing: true })
     ],
     providers: [appService],
-    declarations: [loginCtrl, usermngCtrl, userprofileCtrl, sidenavCtrl, sidenavDd, AlertDialog, ConfirmDialog, DataDialog],
+    declarations: [mainCtrl, loginCtrl, usermngCtrl, userprofileCtrl, sidenavCtrl, sidenavDd, AlertDialog, ConfirmDialog, DataDialog],
     bootstrap: [mainCtrl]
 })
 export class AppModule { }
 
 platformBrowserDynamic().bootstrapModule(AppModule);
-
-class appRun {
-    constructor($rootScope, appService, $state) {
-        //$rootScope._ = window._;
-
-        $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
-            if (toState.name.indexOf('login') < 0 && !appService.authtoken) {
-                event.preventDefault(); // stop current execution
-                $state.go('login'); // go to login
-            }
-        });
-
-        $rootScope.$on("$stateChangeCancel", function (event, toState, toParams, fromState, fromParams) {
-            console.warn("cancel state: " + toState.name);
-        });
-    }
-}
 
 class appConfig {
     constructor($mdThemingProvider, $mdDateLocaleProvider, $stateProvider, $urlRouterProvider, $locationProvider) {

@@ -41,7 +41,7 @@ export class ConfirmDialog {
     template: `<div md-dialog-title>{{title}}</div>
         <md-dialog-content>
             <table style="margin:10px;max-width:750px">
-                <tr *ngFor="let (key,val) in content">
+                <tr *ngFor="let (key,val) of content">
                     <td style="padding-right:5px"><b>{{key}}</b></td>
                     <td><pre>{{val}}</pre></td>
                 </tr>
@@ -58,3 +58,4 @@ export class DataDialog {
 
     constructor(public dialogRef: MdDialogRef<DataDialog>) {}
 }
+
