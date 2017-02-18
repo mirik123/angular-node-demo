@@ -15,7 +15,7 @@ import { appService } from '../app.service';
                 <div ng-message="email">Field has illegal characters</div>
             </script>
 
-            <router-outlet name="mainview" layout-fill></router-outlet>
+            <router-outlet layout-fill></router-outlet>
         </div>`
 })
 export class mainCtrl {
@@ -24,13 +24,13 @@ export class mainCtrl {
     constructor(private appService: appService, private router: Router) {
         this.title = 'MAIN';
 
-        router.events.subscribe(evt => {
+        /*router.events.subscribe(event => {
             if (event instanceof NavigationStart) {
-                if ((<NavigationStart>event).url.indexOf('login') < 0 && !appService.authtoken) {
+                if (event.url.indexOf('login') < 0 && !appService.authtoken) {
                     event.preventDefault(); // stop current execution
-                    router.navigateByUrl('/login'); // go to login
+                    router.navigate(['/login']); // go to login
                 }
             }
-        });
+        });*/
     }
 }

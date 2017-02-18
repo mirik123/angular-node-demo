@@ -1,6 +1,6 @@
 ﻿
 import { MdDialogRef } from '@angular/material';
-import { Component } from '@angular/core';
+import { Component, Pipe, PipeTransform } from '@angular/core';
 
 @Component({
     selector: 'alert-dialog',
@@ -41,9 +41,9 @@ export class ConfirmDialog {
     template: `<div md-dialog-title>{{title}}</div>
         <md-dialog-content>
             <table style="margin:10px;max-width:750px">
-                <tr *ngFor="let (key,val) of content">
-                    <td style="padding-right:5px"><b>{{key}}</b></td>
-                    <td><pre>{{val}}</pre></td>
+                <tr *ngFor="let itm of content | kvp">
+                    <td style="padding-right:5px"><b>{{itm.key}}</b></td>
+                    <td><pre>{{itm.val}}</pre></td>
                 </tr>
             </table>
         </md-dialog-content>
@@ -59,3 +59,9 @@ export class DataDialog {
     constructor(public dialogRef: MdDialogRef<DataDialog>) {}
 }
 
+@Pipe({ name: 'kvp', pure: false })
+export class KeyValuePairsPipe implements PipeTransform {
+    transform(value: any, args: any[] = null): any {
+        return Object.keys(value).map(key => { return { key: key, val: value[key] }; });
+    }
+}

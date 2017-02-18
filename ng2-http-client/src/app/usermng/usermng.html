@@ -40,8 +40,8 @@
                             </md-select>
                         </th>
                         <th md-column>
-                            <md-datepicker name="birthdateFrom" [(ngModel)]="searchform.birthdateFrom" md-max-date="searchform.birthdateTo" md-placeholder="date from" style="display:block"></md-datepicker>
-                            <md-datepicker name="birthdateTo" [(ngModel)]="searchform.birthdateTo" md-min-date="searchform.birthdateFrom" md-max-date="maxDate" md-placeholder="date to" style="display:block"></md-datepicker>
+                            <input type="datetime-local" name="birthdateFrom" [(ngModel)]="searchform.birthdateFrom" [attr.max]="searchform.birthdateTo" placeholder="date from" style="display:block"/>
+                            <input type="datetime-local" name="birthdateTo" [(ngModel)]="searchform.birthdateTo" [attr.min]="searchform.birthdateFrom" [attr.max]="maxDate" placeholder="date to" style="display:block"/>
                         </th>
                         <th md-column>
                             <input [(ngModel)]="searchform.email" [ngModelOptions]="{ updateOn: 'default', getterSetter: true}" type="text" maxlength="32" />
@@ -71,7 +71,7 @@
                             </md-select>
                         </td>
                         <td md-cell *ngIf="row===tabledata.selected">
-                            <md-datepicker [(ngModel)]="row.birthdate" md-max-date="maxDate" required name="{{'birthdate'+$index}}" md-placeholder="birth date" class="invalid-border"></md-datepicker>
+                            <input type="datetime-local" [(ngModel)]="row.birthdate" [attr.max]="maxDate" required name="{{'birthdate'+$index}}" placeholder="birth date" class="invalid-border"/>
                         </td>
                         <td md-cell *ngIf="row===tabledata.selected">
                             <input type="email" [(ngModel)]="row.email" required name="{{'email'+$index}}" maxlength="32"  class="invalid-border"/>

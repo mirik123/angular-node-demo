@@ -145,7 +145,7 @@ gulp.task('script', function () {
         .on('end', function () {
             var dev = browserify('./build/app/app.ts', { debug: !isrelease })
                 .plugin(tsify, tsconfig)
-                .transform(babelify, { extensions: ['.tsx', '.ts'] })
+                //.transform(babelify, { extensions: ['.tsx', '.ts'] })
                 .on('error', function (error) {
                     console.error('tsify error: ' + error.toString());
                     this.emit("end");

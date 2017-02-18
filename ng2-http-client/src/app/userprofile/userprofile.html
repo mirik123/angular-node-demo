@@ -19,7 +19,7 @@
                     </md-grid-tile>
                     <md-grid-tile>
                         <md-input-container class="md-block">
-                            <input name="userpass" [(ngModel)]="profilemodel.password" type="password" maxlength="32" minlength="2" />
+                            <input mdInput name="userpass" [(ngModel)]="profilemodel.password" type="password" maxlength="32" minlength="2" />
                             <div ng-messages="profileform.userpass.$error" role="alert" ng-messages-multiple md-auto-hide="false">
                                 <div ng-messages-include="error-messages"></div>
                             </div>
@@ -36,7 +36,7 @@
                     </md-grid-tile>
                     <md-grid-tile>
                         <md-input-container class="md-block">
-                            <md-datepicker name="birthdate" [(ngModel)]="profilemodel.birthdate" md-placeholder="birth date" md-max-date="maxDate" required style="display:block"></md-datepicker>
+                            <input mdInput type="datetime-local" name="birthdate" [(ngModel)]="profilemodel.birthdate" placeholder="birth date"  [attr.max]="maxDate" required style="display:block"/>
                             <div ng-messages="profileform.birthdate.$error" role="alert" ng-messages-multiple md-auto-hide="false">
                                 <div ng-messages-include="error-messages"></div>
                             </div>
@@ -47,7 +47,7 @@
                     </md-grid-tile>
                     <md-grid-tile>
                         <md-input-container class="md-block">
-                            <input name="useremail" [(ngModel)]="profilemodel.email" type="email" required maxlength="32" />
+                            <input mdInput name="useremail" [(ngModel)]="profilemodel.email" type="email" required maxlength="32" />
                             <div ng-messages="profileform.useremail.$error" role="alert" ng-messages-multiple md-auto-hide="false">
                                 <div ng-messages-include="error-messages"></div>
                             </div>

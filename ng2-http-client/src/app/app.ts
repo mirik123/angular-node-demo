@@ -7,12 +7,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, CanDeactivate, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { MaterialModule } from '@angular/material';
 
 import { appService } from './app.service';
 import { mainCtrl } from './main/main.controller';
-import { AlertDialog, ConfirmDialog, DataDialog } from './main/dialogs';
+import { AlertDialog, ConfirmDialog, DataDialog, KeyValuePairsPipe } from './main/dialogs';
 import { loginCtrl } from './login/login.controller';
 import { usermngCtrl } from './usermng/usermng.controller';
 import { userprofileCtrl } from './userprofile/userprofile.controller';
@@ -24,17 +24,34 @@ import { sidenavDd } from './sidenav/sidenav.directive';
         HttpModule,
         BrowserModule,
         FormsModule,
-        MaterialModule.forRoot(),
+        MaterialModule,
         RouterModule.forRoot([
             {
-                outlet: 'mainview',
                 path: 'login',
-                component: loginCtrl
+                component: loginCtrl,
+                /*canActivate: [class implements CanActivate {
+                    constructor(private $appService: appService) { }
+                    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+                        return true;
+                    }
+                }],
+                canDeactivate: [class implements CanDeactivate<loginCtrl> {
+                    constructor(private $appService: appService) { }
+                    canDeactivate(component: loginCtrl, route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+                        return !!this.$appService.authtoken;
+                    }
+                }]*/
             },
             {
-                outlet: 'mainview',
                 path: 'sidenav',
                 component: sidenavCtrl,
+                /*canActivate: [class implements CanActivate {
+                    constructor(private $appService: appService) { }
+                    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+                        return !!this.$appService.authtoken;
+                    }
+                }],*/
+                //loadChildren: 'userprofile',
                 children: [{
                     outlet: 'sidenav',
                     path: 'userprofile',
@@ -42,25 +59,23 @@ import { sidenavDd } from './sidenav/sidenav.directive';
                 },
                 {
                     outlet: 'sidenav',
-                    path: 'usermng/:username',
+                    path: 'usermng',
                     component: usermngCtrl
                 }]
             },
             {
-                outlet: 'mainview',
                 path: '',
-                redirectTo: '/login',
+                redirectTo: 'login',
                 pathMatch: 'full'
             },
             {
                 path: '**',
-                outlet: 'mainview',
-                redirectTo: '/login'
+                redirectTo: 'login'
             }
         ], { enableTracing: true })
     ],
     providers: [appService],
-    declarations: [mainCtrl, loginCtrl, usermngCtrl, userprofileCtrl, sidenavCtrl, sidenavDd, AlertDialog, ConfirmDialog, DataDialog],
+    declarations: [mainCtrl, loginCtrl, usermngCtrl, userprofileCtrl, sidenavCtrl, sidenavDd, AlertDialog, ConfirmDialog, DataDialog, KeyValuePairsPipe],
     bootstrap: [mainCtrl]
 })
 export class AppModule { }

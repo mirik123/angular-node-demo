@@ -21,7 +21,8 @@ export class sidenavCtrl {
     ) {}
 
     selectTab(target: string) {
-        this.$state.navigateByUrl((target !== '/login' ? '/sidenav/' : '') + target);
+        if (target !== 'login') target = 'sidenav/' + target;
+        this.$state.navigate([target]);
     }
      
     logout() {

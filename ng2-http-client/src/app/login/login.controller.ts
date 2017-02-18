@@ -43,7 +43,7 @@ export class loginCtrl implements OnInit {
                         this.appService.permissions = cookie.permissions;
                         this.appService.username = cookie.username;
 
-                        this.$state.navigateByUrl('/sidenav');
+                        this.$state.navigate(['sidenav']);
                     }
                 });
         }
