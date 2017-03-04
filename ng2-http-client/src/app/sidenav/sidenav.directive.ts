@@ -26,8 +26,8 @@ export class sidenavDd implements OnChanges, AfterViewInit {
     ngAfterViewInit() {
         //this.sidenavelem.nativeElement.value = ''; 
         //var myattr = this.sidenavelem.nativeElement.getAttribute("myattr");
-        this.sidenavelem.nativeElement.querySelector('h1').focus();
-        this.renderer.invokeElementMethod(this.sidenavelem.nativeElement, 'focus');
+        //this.sidenavelem.nativeElement.querySelector('h1').focus();
+        //this.renderer.invokeElementMethod(this.sidenavelem.nativeElement, 'focus');
     }
 
     ngOnChanges(changes: SimpleChanges) {

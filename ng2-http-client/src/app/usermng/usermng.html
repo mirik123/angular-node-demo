@@ -5,11 +5,11 @@
              md-total="tabledata.count" md-page-select md-boundary-links>
         </div>
         <span>&nbsp;</span>
-        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="replay" on-click="reset()" mdTooltip="Reset filters">
+        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="replay" (click)="reset()" mdTooltip="Reset filters">
         </md-icon>        
-        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="create" on-click="create()" mdTooltip="Create new record">
+        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="create" (click)="create()" mdTooltip="Create new record">
         </md-icon>
-        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="autorenew" on-click="reload()" mdTooltip="Reload data">
+        <md-icon md-ink-ripple="#333" style="cursor:pointer;" icon="autorenew" (click)="reload()" mdTooltip="Reload data">
         </md-icon>
     </div>
     <div ng-messages="{error: !!httpError}" role="alert">
@@ -50,7 +50,7 @@
                     </tr>
                 </thead>
                 <tbody md-body>
-                    <tr md-row on-dblclick="showDetails(row)"
+                    <tr md-row (dblclick)="showDetails(row)"
                         *ngFor="let row of tabledata.filtered | slice: (tabledata.page -1) * tabledata.limit : tabledata.limit; let $index=index; trackBy: row.username">
                         <td md-cell *ngIf="row!==tabledata.selected || !tabledata.selected.newrecord">{{row.username}}</td>
                         <td md-cell *ngIf="row!==tabledata.selected">***</td>
@@ -78,10 +78,10 @@
                         </td>
 
                         <td md-cell style="cursor:pointer;">
-                            <md-icon md-ink-ripple="#333" icon="save" on-click="!usermngform.$invalid && save(row)" *ngIf="row===tabledata.selected" [attr.disabled]="!usermngform.$dirty || usermngform.$invalid" mdTooltip="Save current record"></md-icon>
-                            <md-icon md-ink-ripple="#333" icon="replay" on-click="undo()" *ngIf="row===tabledata.selected" mdTooltip="Undo current record<"></md-icon>
-                            <md-icon md-ink-ripple="#333" icon="mode_edit" on-click="edit(row)" *ngIf="row!==tabledata.selected" mdTooltip="Edit current record"></md-icon>
-                            <md-icon md-ink-ripple="#333" icon="delete" on-click="remove(row)" *ngIf="row!==tabledata.selected && !tabledata.selected.newrecord" mdTooltip="Remove current record"></md-icon>
+                            <md-icon md-ink-ripple="#333" icon="save" (click)="!usermngform.$invalid && save(row)" *ngIf="row===tabledata.selected" [attr.disabled]="!usermngform.$dirty || usermngform.$invalid" mdTooltip="Save current record"></md-icon>
+                            <md-icon md-ink-ripple="#333" icon="replay" (click)="undo()" *ngIf="row===tabledata.selected" mdTooltip="Undo current record<"></md-icon>
+                            <md-icon md-ink-ripple="#333" icon="mode_edit" (click)="edit(row)" *ngIf="row!==tabledata.selected" mdTooltip="Edit current record"></md-icon>
+                            <md-icon md-ink-ripple="#333" icon="delete" (click)="remove(row)" *ngIf="row!==tabledata.selected && !tabledata.selected.newrecord" mdTooltip="Remove current record"></md-icon>
                         </td>
                     </tr>
                 </tbody>

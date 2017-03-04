@@ -59,7 +59,7 @@
                 </div>
             </md-card-content>
             <md-card-actions layout="row" style="margin-top:0" layout-align="space-between center">
-                <button md-button class="md-block md-raised" type="submit" [disabled]="profileform.$invalid || !profileform.$dirty" on-click="update()">Update</button>
+                <button md-button class="md-block md-raised" type="submit" [disabled]="profileform.$invalid || !profileform.$dirty" (click)="update()">Update</button>
             </md-card-actions>
         </md-card>
     </form>

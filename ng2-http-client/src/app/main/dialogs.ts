@@ -7,7 +7,7 @@ import { Component, Pipe, PipeTransform } from '@angular/core';
     template: `<div md-dialog-title>{{title}}</div>
         <md-dialog-content>{{message}}</md-dialog-content>
         <md-dialog-actions>
-            <button type="button" md-dialog-close md-raised-button on-click="dialogRef.close()">{{okbtn}}</button>
+            <button type="button" md-dialog-close md-raised-button (click)="dialogRef.close()">{{okbtn}}</button>
         </md-dialog-actions>`,
 })
 export class AlertDialog {
@@ -23,8 +23,8 @@ export class AlertDialog {
     template: `<div md-dialog-title>{{title}}</div>
         <md-dialog-content>{{message}}</md-dialog-content>
         <md-dialog-actions>
-            <button type="button" md-dialog-close md-raised-button on-click="dialogRef.close(true)">{{okbtn}}</button>
-            <button type="button" md-dialog-close md-raised-button on-click="dialogRef.close(false)">{{cancelbtn}}</button>
+            <button type="button" md-dialog-close md-raised-button (click)="dialogRef.close(true)">{{okbtn}}</button>
+            <button type="button" md-dialog-close md-raised-button (click)="dialogRef.close(false)">{{cancelbtn}}</button>
         </md-dialog-actions>`,
 })
 export class ConfirmDialog {
@@ -48,7 +48,7 @@ export class ConfirmDialog {
             </table>
         </md-dialog-content>
         <md-dialog-actions>
-            <button type="button" md-dialog-close md-raised-button on-click="dialogRef.close()">{{okbtn}}</button>
+            <button type="button" md-dialog-close md-raised-button (click)="dialogRef.close()">{{okbtn}}</button>
         </md-dialog-actions>`,
 })
 export class DataDialog {

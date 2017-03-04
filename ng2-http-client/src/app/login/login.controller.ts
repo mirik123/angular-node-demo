@@ -51,7 +51,7 @@ export class loginCtrl implements OnInit {
 
     login() {
         var base64creds = this.appService.encodecreds(this.loginmodel.username, this.loginmodel.password);
-        this.appService.http('/api/login', 'POST', new Headers({ 'Authorization': 'Basic ' + base64creds }))
+        this.appService.http('/api/login', 'POST', { 'Authorization': 'Basic ' + base64creds })
             .subscribe(dt => {
                 var data = dt.json();
                 if (!data) {
