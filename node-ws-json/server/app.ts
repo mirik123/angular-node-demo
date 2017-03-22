@@ -14,6 +14,8 @@ import morgan = require('morgan');
 import url = require('url');
 import WebSocket = require("ws");
 
+//import RedisStore = require('connect-redis');
+
 var fs = require('fs');
 
 var app = express();
@@ -31,6 +33,7 @@ var sessionReq = session({
     secret: '123456',
     resave: false,
     saveUninitialized: true,
+    //store: new RedisStore({}),
     cookie: { maxAge: 3600000, secure: 'auto' }
 });
 app.use(sessionReq);
@@ -186,7 +189,7 @@ function evtWebSockedConnected(server: WebSocket.Server, client: WebSocket): voi
         if (data.target === 'logout') {
             result = { content: {}, target: 'logout' };
             session.destroy(err => { if (err) console.error('destroy session error: ', err); });
-            //client.close(200, { message: 'planned closure' });
+            //client.close(3001, { message: 'planned closure' });
         }
         else {
             result = message(data, ip, session);

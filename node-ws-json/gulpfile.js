@@ -57,7 +57,7 @@ gulp.task('server-express', ['script-express'], function () {
     nodemon({
         script: 'wwwroot/app-express.js',
         watch: livereloadGlobs,
-        vebose: true
+        verbose: true
     //...add nodeArgs: ['--debug=5858'] to debug 
     //..or nodeArgs: ['--debug-brk=5858'] to debug at server start
     }).on('start', function () {
@@ -69,6 +69,7 @@ gulp.task('server-express', ['script-express'], function () {
 
 gulp.task('watch-express', ['server-express'], function () {
     gulp.watch(['./server/**/*.ts'], ['script-express']);
+    gulp.watch(['../basic-ws-client/wwwroot/**/*.*'], ['client']);
 });
 
 gulp.task('client', function () {

@@ -1,18 +1,14 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "jsx": "react",
-    "lib": [ "es6", "dom" ],
     "module": "commonjs",
-    "moduleResolution": "node",
     "noImplicitAny": false,
     "outDir": "./build",
     "preserveConstEnums": true,
     "removeComments": false,
     "sourceMap": true,
-    "target": "es6"
+    "target": "es5"
   },
   "exclude": [
     "node_modules"

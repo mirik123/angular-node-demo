@@ -53,6 +53,48 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "node-http-mongodb-es6", "no
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "node-ws-json", "node-ws-json\node-ws-json.njsproj", "{05565ACC-6455-4909-BA0F-11A4089CC6C8}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ng2-http-client", "ng2-http-client\", "{2CCC1BF1-E31A-4A76-B261-6A4CA562DE78}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_54708"
+		Debug.AspNetCompiler.PhysicalPath = "ng2-http-client\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_54708\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_54708"
+		Release.AspNetCompiler.PhysicalPath = "ng2-http-client\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_54708\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "54708"
+		SlnRelativePath = "ng2-http-client\"
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "basic-ws-rx-client", "basic-ws-rx-client\", "{99AE859E-FA4A-4FCB-BA3F-1474A11A8A6C}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_51324"
+		Debug.AspNetCompiler.PhysicalPath = "basic-ws-rx-client\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51324\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_51324"
+		Release.AspNetCompiler.PhysicalPath = "basic-ws-rx-client\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51324\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "51324"
+		SlnRelativePath = "basic-ws-rx-client\"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +125,14 @@ Global
 		{05565ACC-6455-4909-BA0F-11A4089CC6C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05565ACC-6455-4909-BA0F-11A4089CC6C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05565ACC-6455-4909-BA0F-11A4089CC6C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CCC1BF1-E31A-4A76-B261-6A4CA562DE78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CCC1BF1-E31A-4A76-B261-6A4CA562DE78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CCC1BF1-E31A-4A76-B261-6A4CA562DE78}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CCC1BF1-E31A-4A76-B261-6A4CA562DE78}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{99AE859E-FA4A-4FCB-BA3F-1474A11A8A6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99AE859E-FA4A-4FCB-BA3F-1474A11A8A6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99AE859E-FA4A-4FCB-BA3F-1474A11A8A6C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{99AE859E-FA4A-4FCB-BA3F-1474A11A8A6C}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
