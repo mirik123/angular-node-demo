@@ -7,27 +7,13 @@ const gulp = require('gulp');
 const debug = require('gulp-debug');
 const stripDebug = require('gulp-strip-debug');
 const gif = require('gulp-if');
-
 const uglify = require('gulp-uglify');
-const cssmin = require('gulp-cssmin');
-
-const path = require('path');
 const browserify = require('browserify');
 const tsify = require('tsify');
 const tsconfig = require('./tsconfig.json').compilerOptions;
 const source = require('vinyl-source-stream'); // Used to stream bundle for further handling
 const buffer = require('vinyl-buffer');
-
 const sourcemaps = require('gulp-sourcemaps');
-const concat = require('gulp-concat');
-const sass = require('gulp-sass');
-const autoprefixer = require('gulp-autoprefixer');
-const html2js = require('gulp-ng-html2js');
-const minifyHtml = require("gulp-minify-html");
-
-const svgstore = require('gulp-svg-ngmaterial');
-const svgmin = require('gulp-svgmin');
-
 
 //===============================================
 const isrelease = false;
