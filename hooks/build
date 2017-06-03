@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+#https://github.com/thibaultdelor/testAutobuildHooks
+
+printenv
+docker build --rm -t $IMAGE_NAME -f Dockerfile --build-arg client=basic-http-client --build-arg server=node-http-json .
