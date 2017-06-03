@@ -1,0 +1,51 @@
+#https://docs.docker.com/compose/compose-file
+
+version: "3"
+services:
+  nodeapp:
+    build:
+      context: .
+      dockerfile: "Dockerfile"
+      args:
+        client: "basic-http-client"
+        server: "node-http-mongodb-es6"
+    extra_hosts:
+      - "nodehttpjson:127.0.0.1"
+    hostname: "nodehttpjson"
+    restart: "on-failure"
+    image: "node:slim"
+    container_name: "mirik123/nodeimg"
+    labels:
+      package.server.name: "node-http-mongodb-es6"
+      package.client.name: "basic-http-client"
+    networks: 
+      testnet:
+        ipv4_address: "172.18.0.32"
+    ports: "8080:8080"
+    links: "mongodb"
+    depends_on: "mongodb"
+    deploy:
+      replicas: 5
+  mongodb:
+    image: "mongo:latest"
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    extra_hosts:
+      - "mongodb:127.0.0.1"
+    hostname: "mongodb"
+    restart: "on-failure"
+    networks: 
+      testnet:
+        ipv4_address: "172.18.0.31"
+    ports: "27017:27017"
+    links: "nodeapp"
+    command: mongod --smallfiles --logpath=/dev/null
+networks:
+  testnet:
+    driver: "overlay"
+    ipam:
+      config:
+        subnet: "172.18.0.0/16"
+        gateway: "172.18.0.1"
