@@ -1,6 +1,0 @@
-node_modules
-obj
-bin
-**/*.js
-**/*.js.map
-!gulpfile.js
