@@ -41,6 +41,7 @@
     "gulp-svgmin": "^1.2.2",
     "gulp-svg-ngmaterial": "^2.0.2",
     "gulp-uglify": "^2.0.0",
+	"gulp-zip": "^4.0.0",
     "nodemon": "^1.11.0",
     "tsify": "^2.0.7",
     "typescript": "^2.1.4",
@@ -53,9 +54,9 @@
   "main": "index.js",
   "name": "basic-http-client",
   "scripts": {
-    "prestart": "npm install",
-    "postinstall": "tsd install",
-    "start": "gulp"
+    "postinstall": "tsd install && typings install",
+    "start": "gulp",
+	"zip": "gulp zip"
   },
   "version": "1.0.0"
 }

@@ -7,7 +7,7 @@ const gulp = require('gulp');
 const debug = require('gulp-debug');
 const stripDebug = require('gulp-strip-debug');
 const gif = require('gulp-if');
-
+const zip = require('gulp-zip');
 const uglify = require('gulp-uglify');
 const cssmin = require('gulp-cssmin');
 
@@ -30,7 +30,7 @@ const svgmin = require('gulp-svgmin');
 
 
 //===============================================
-const isrelease = false;
+const isrelease = process.env.PROJ_RELEASE || false;
 const livereloadGlobs = [
         'wwwroot/**/*.js',
         'wwwroot/**/*.html',
@@ -172,4 +172,10 @@ gulp.task('script', function () {
             .pipe(gulp.dest('wwwroot/js'));
 
     return dev;
+});
+
+gulp.task('zip', ['build'], function () {
+    return gulp.src('wwwroot/**/*')
+		.pipe(zip('dist.zip'))
+		.pipe(gulp.dest('./wwwroot'));
 });

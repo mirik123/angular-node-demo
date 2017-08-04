@@ -17,7 +17,7 @@ const tsify = require('tsify');
 const tsconfig = require('./tsconfig.json').compilerOptions;
 const source = require('vinyl-source-stream'); // Used to stream bundle for further handling
 const buffer = require('vinyl-buffer');
-
+const zip = require('gulp-zip');
 const sourcemaps = require('gulp-sourcemaps');
 const concat = require('gulp-concat');
 const sass = require('gulp-sass');
@@ -30,7 +30,7 @@ const svgmin = require('gulp-svgmin');
 
 
 //===============================================
-const isrelease = false;
+const isrelease = process.env.PROJ_RELEASE || false;
 const livereloadGlobs = [
         'wwwroot/**/*.js',
         'wwwroot/**/*.html',
@@ -172,4 +172,10 @@ gulp.task('script', function () {
             .pipe(gulp.dest('wwwroot/js'));
 
     return dev;
+});
+
+gulp.task('zip', ['build'], function () {
+    return gulp.src('wwwroot/**/*')
+		.pipe(zip('dist.zip'))
+		.pipe(gulp.dest('./wwwroot'));
 });

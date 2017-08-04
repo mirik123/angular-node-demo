@@ -16,13 +16,15 @@ import { Utils } from './utils';
 
 var app = express();
 
+const client_path = process.env.PROJ_CLIENT || __dirname + '/../wwwroot/client';
+
 // all environments 
 //app.set('port', process.env.PORT || 3000);
-app.use(favicon(__dirname + '/../wwwroot/client/assets/icons/favicon.ico'));
+app.use(favicon(client_path + '/assets/icons/favicon.ico'));
 app.use(morgan('combined'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(express.static(__dirname + '/../wwwroot/client'));
+app.use(express.static(client_path));
 //app.use(cookieParser());
 /*app.use(session({
     secret: '123456',
@@ -109,7 +111,7 @@ app.use(function (err, req: express.Request, res: express.Response, next) {
 
 var server = http.createServer(app)
     .listen(8080, function () {
-        console.log('Express server listening on port 8080 and folder: ' + __dirname + '/../wwwroot/client');
+        console.log('Express server listening on port 8080 and folder: ' + client_path);
         Utils.init();
     }).on('close', function () {
         console.log(' Stopping ...');

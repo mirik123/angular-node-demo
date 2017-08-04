@@ -14,9 +14,10 @@ const tsconfig = require('./tsconfig.json').compilerOptions;
 const source = require('vinyl-source-stream'); // Used to stream bundle for further handling
 const buffer = require('vinyl-buffer');
 const sourcemaps = require('gulp-sourcemaps');
+const zip = require('gulp-zip');
 
 //===============================================
-const isrelease = false;
+const isrelease = process.env.PROJ_RELEASE || false;
 const livereloadGlobs = [
         'wwwroot/**/*.js',
         'wwwroot/**/*.html',
@@ -37,7 +38,7 @@ gulp.task('prints', function () {
 // ================================
 // EXPRESS SERVER
 // ================================
-gulp.task('server-express', ['script-express'], function () {
+gulp.task('server-express', ['build'], function () {
     //livereload.listen();
 
     nodemon({
@@ -54,15 +55,10 @@ gulp.task('server-express', ['script-express'], function () {
 });
 
 gulp.task('watch-express', ['server-express'], function () {
-    gulp.watch(['./server/**/*.ts'], ['script-express']);
+    gulp.watch(['./server/**/*.ts'], ['build']);
 });
 
-gulp.task('client', function () {
-    gulp.src('../basic-http-client/wwwroot/**/*.*')
-        .pipe(gulp.dest('wwwroot/client'));
-});
-
-gulp.task('script-express', ['prints', 'client'], function () {
+gulp.task('build', ['prints'], function () {
     gulp.src('./server/db/users.json')
         .pipe(gulp.dest('wwwroot'));
 
@@ -97,3 +93,8 @@ gulp.task('script-express', ['prints', 'client'], function () {
     return dev;
 });
 
+gulp.task('zip', ['build'], function () {
+    return gulp.src('wwwroot/**/*')
+		.pipe(zip('dist.zip'))
+		.pipe(gulp.dest('./wwwroot'));
+});

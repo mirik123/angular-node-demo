@@ -20,13 +20,15 @@ var fs = require('fs');
 
 var app = express();
 
+const client_path = process.env.PROJ_CLIENT || __dirname + '/../wwwroot/client';
+
 // all environments
 //app.set('port', process.env.PORT || 3000);
-app.use(favicon(__dirname + '/../wwwroot/client/assets/icons/favicon.ico'));
+app.use(favicon(client_path + '/assets/icons/favicon.ico'));
 app.use(morgan('combined'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(express.static(__dirname + '/../wwwroot/client'));
+app.use(express.static(client_path));
 //app.use(cookieParser('123456'));
 
 var sessionReq = session({
@@ -97,7 +99,7 @@ wsServer.on("connection", client => evtWebSockedConnected(wsServer, client)).on(
 });*/
 
 httpsrv.listen(8080, function () {
-    console.log('Express server listening on port 8080 and folder: ' + __dirname + '/../wwwroot/client');
+    console.log('Express server listening on port 8080 and folder: ' + client_path);
 });
 
 //https://matoski.com/article/node-express-generate-ssl/
