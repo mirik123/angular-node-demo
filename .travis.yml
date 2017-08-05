@@ -7,14 +7,16 @@ before_script:
 env: PROJ_RELEASE=false
 script: 
 - cd $TRAVIS_BUILD_DIR/basic-http-client && npm install && npm run zip
+- mv $TRAVIS_BUILD_DIR/basic-http-client/wwwroot/dist.zip $TRAVIS_BUILD_DIR/basic-http-client.zip
 - cd $TRAVIS_BUILD_DIR/node-http-json && npm install && npm run zip
+- mv $TRAVIS_BUILD_DIR/node-http-json/wwwroot/dist.zip $TRAVIS_BUILD_DIR/node-http-json.zip
 deploy:
   provider: releases
   api_key:
     secure: Zjdw0MLe5Zmo4+vGBRvnCemoHkq5oTAD7hWGeujjENcWb5vh0KfBC20YSKHvckA3Vr6/Ecrm/UnMmrqxyQ8U3hOq1USIXXcedwEBhraW1DT+ZTVI8PK4CvKaHzvQnCPTMgBrhuy2JR0PdH5BWQc1SqfCE7+wpNqO9/SLP0/5v+roOaNCMoXvGMoP2d3j5IeTaqv2PZtkJqhiGAUcXbUu4sM9iJi1j7i/BxtZcgZNUHp4I+CQNqh+SwQ1bxuyjZyXfxykt8cJG/UyE9sl75HXUPcdta6479Wy63O5DDM+Zx9XB1bIEsnPG6ouNiqn5hVgMZydynqoGfiVpSR8gsSFTdJS7k5O3IQLRh5ouLwtTwE41ECUWVUNizak9EL84RBLwqewA3qxcc0jwgH2jbhh17h8rwTDOzivrifxZLnkCpRm9i5bX2r+7FYK0p/C9dS2E0/a2fY+iDYOB2xIO7WJBVNyjf2MZ1L1uIw1qul/NZLNjiRxGi7tmIbQ2sW/+wGfxHEdhsgDuXIx9Yggq+cSMHj+pqGwJj9e6ie2KT6uxNp1htiSkO/XjlXAV7hgo+SbcbZdvXFlblGwfGIQ1/0NW8aI367wsTJ8YoAKUbTArgB2O8hBKLi29dyrhfaOckkLs9EYVRoXUp2nA9PeISLhBeEdXnn2x83J8zJSdhQm4zU=
   file: 
-    - $TRAVIS_BUILD_DIR/basic-http-client/wwwroot/dist.zip
-    - $TRAVIS_BUILD_DIR/node-http-json/wwwroot/dist.zip
+    - $TRAVIS_BUILD_DIR/basic-http-client.zip
+    - $TRAVIS_BUILD_DIR/node-http-json.zip
   skip_cleanup: true
   on:
     tags: true
