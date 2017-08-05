@@ -9,7 +9,8 @@ jobs:
   include:
     - script: cd basic-http-client && npm install && npm run zip
     - script: cd node-http-json && npm install && npm run zip
-    - stage: github release
+    - stage: deploy
+      script: echo $TRAVIS_BUILD_DIR
       deploy:
         provider: releases
         api_key:
@@ -19,5 +20,4 @@ jobs:
           - node-http-json/wwwroot/dist.zip
         skip_cleanup: true
         on:
-          repo: mirik123/angular-node-demo
-
+          tags: true
