@@ -11,7 +11,6 @@ script:
 - mv $TRAVIS_BUILD_DIR/basic-http-client/wwwroot/dist.zip $TRAVIS_BUILD_DIR/builds/basic-http-client.zip
 - cd $TRAVIS_BUILD_DIR/node-http-json && npm install && npm run zip
 - mv $TRAVIS_BUILD_DIR/node-http-json/wwwroot/dist.zip $TRAVIS_BUILD_DIR/builds/node-http-json.zip
-- pwd
 - ls -al $TRAVIS_BUILD_DIR/builds
 deploy:
   - provider: releases
@@ -22,7 +21,6 @@ deploy:
     skip_cleanup: true
     on:
       repo: mirik123/angular-node-demo
-      all_branches: true
       tags: true
   - provider: s3
     access_key_id: AKIAJLUNOIPXKJRAX3OA
@@ -34,3 +32,6 @@ deploy:
     detect_encoding: true
     local_dir: $TRAVIS_BUILD_DIR/builds
     skip_cleanup: true
+    on:
+      repo: mirik123/angular-node-demo
+      branch: master
