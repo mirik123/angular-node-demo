@@ -6,6 +6,7 @@ before_script:
 - npm install -g typings
 env: PROJ_RELEASE=false
 script: 
+- mkdir $TRAVIS_BUILD_DIR/builds
 - cd $TRAVIS_BUILD_DIR/basic-http-client && npm install && npm run zip
 - mv $TRAVIS_BUILD_DIR/basic-http-client/wwwroot/dist.zip $TRAVIS_BUILD_DIR/builds/basic-http-client.zip
 - cd $TRAVIS_BUILD_DIR/node-http-json && npm install && npm run zip
