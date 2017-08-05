@@ -1,4 +1,6 @@
-# Demo projects for MEAN stack
+# Proof-of-Concept projects for MEAN stack
+
+[![Build Status](https://travis-ci.org/mirik123/angular-node-demo.svg?branch=master)](https://travis-ci.org/mirik123/angular-node-demo)
 
 |Project name|Project description|
 |---|---|
@@ -24,14 +26,14 @@ Servers are statefull and keep sessions with authenticaiton tokens for every log
 
   |Component          |Method|Request URL|Request Header           |Request Body|Response |Description|
   |-------------------|------|-----------|-------------------------|------------|-------- |-----------|
-  |login              |POST  |/login     |Basic ìusername:passwordî|            |authtoken|Login and receive authentication token|
-  |logout             |POST  |/logout    |Bearer ìauthtokenî       |            |         |Logout user and kill server session|
-  |user profile       |GET   |/profile   |Bearer ìauthtokenî       |            |"username":"user", "permissions":"user", "email":"user22@com", "birthdate":"2016-12-31T22:00:00Z", "createdon":"2017-01-13T15:21:41.599Z", "updatedon":"2017-01-15T20:42:45.192Z", "failedlogins":3, "loginsuccesson":"2017-01-13T15:31:21.239Z", "loginip":"::1", "loginfailureon":"2017-01-22T11:19:26.061Z"|Get currently logged user profile data|
-  |                   |POST  |/profile   |Bearer ìauthtokenî       |password, permissions, birthdate, email| |Update current user profile data                                                                  
-  |user management    |GET   |/users     |Bearer ìauthtokenî       | |[array of user profiles]|Get all user profiles (admins only).|
-  |                   |POST  |/users     |Bearer ìauthtokenî       |password, permissions, birthdate, email||Update other user profiles, one at a time (admins only)|                                                         
-  |                   |PUT   |/users     |Bearer ìauthtokenî       |username, password, permissions, birthdate, email||Create new user (admins only)|                                                                
-  |                   |DELETE|/users/id  |Bearer ìauthtokenî       | | |Delete user (admins only)|                                                           
+  |login              |POST  |/login     |Basic ‚Äúusername:password‚Äù|            |authtoken|Login and receive authentication token|
+  |logout             |POST  |/logout    |Bearer ‚Äúauthtoken‚Äù       |            |         |Logout user and kill server session|
+  |user profile       |GET   |/profile   |Bearer ‚Äúauthtoken‚Äù       |            |"username":"user", "permissions":"user", "email":"user22@com", "birthdate":"2016-12-31T22:00:00Z", "createdon":"2017-01-13T15:21:41.599Z", "updatedon":"2017-01-15T20:42:45.192Z", "failedlogins":3, "loginsuccesson":"2017-01-13T15:31:21.239Z", "loginip":"::1", "loginfailureon":"2017-01-22T11:19:26.061Z"|Get currently logged user profile data|
+  |                   |POST  |/profile   |Bearer ‚Äúauthtoken‚Äù       |password, permissions, birthdate, email| |Update current user profile data                                                                  
+  |user management    |GET   |/users     |Bearer ‚Äúauthtoken‚Äù       | |[array of user profiles]|Get all user profiles (admins only).|
+  |                   |POST  |/users     |Bearer ‚Äúauthtoken‚Äù       |password, permissions, birthdate, email||Update other user profiles, one at a time (admins only)|                                                         
+  |                   |PUT   |/users     |Bearer ‚Äúauthtoken‚Äù       |username, password, permissions, birthdate, email||Create new user (admins only)|                                                                
+  |                   |DELETE|/users/id  |Bearer ‚Äúauthtoken‚Äù       | | |Delete user (admins only)|                                                           
 
 # Authentication
 Projects can use either secured or unsecured connections, passwords are sent in a clear text to the server and stored as a PBKDF2 hashed and salted strings.
