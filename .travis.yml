@@ -5,7 +5,6 @@ before_script:
 - npm install -g tsd
 - npm install -g typings
 env: PROJ_RELEASE=false
-install: true
 script: 
 - cd $TRAVIS_BUILD_DIR/basic-http-client && npm install && npm run build
 - cd $TRAVIS_BUILD_DIR/node-http-json && npm install && npm run build
