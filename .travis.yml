@@ -6,8 +6,8 @@ before_script:
 - npm install -g typings
 env: PROJ_RELEASE=false
 script: 
-- cd $TRAVIS_BUILD_DIR/basic-http-client && npm install && npm run build
-- cd $TRAVIS_BUILD_DIR/node-http-json && npm install && npm run build
+- cd $TRAVIS_BUILD_DIR/basic-http-client && npm install && npm run zip
+- cd $TRAVIS_BUILD_DIR/node-http-json && npm install && npm run zip
 deploy:
   provider: releases
   api_key:
