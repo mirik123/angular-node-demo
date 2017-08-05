@@ -30,5 +30,3 @@ deploy:
     default_text_charset: 'utf-8'
     local_dir: $TRAVIS_BUILD_DIR/builds
     skip_cleanup: true
-    on:
-      tags: true
