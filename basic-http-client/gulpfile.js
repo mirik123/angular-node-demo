@@ -104,7 +104,9 @@ gulp.task('index', function () {
 });
 
 gulp.task('lib', function () {
-    gulp.src('./src/lib/**/*.js')
+    gulp.src(["./src/lib/angular.js","./src/lib/angular-ui-router.js","./src/lib/angular-aria.js","./src/lib/angular-animate.js",
+			"./src/lib/angular-material.js","./src/lib/angular-material-icons.js","./src/lib/angular-messages.js","./src/lib/angular-cookies.js",
+			"./src/lib/md-data-table.js","./src/lib/lodash.js","./src/lib/moment.js"])
 		.pipe(concat('lib.js'))
 		.pipe(gulp.dest('wwwroot/js'));
 		
