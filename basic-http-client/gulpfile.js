@@ -104,8 +104,13 @@ gulp.task('index', function () {
 });
 
 gulp.task('lib', function () {
-    return gulp.src('./src/lib/**/*.*')
-        .pipe(gulp.dest('wwwroot/lib'));
+    gulp.src('./src/lib/**/*.js')
+		.pipe(concat('lib.js'))
+		.pipe(gulp.dest('wwwroot/js'));
+		
+	gulp.src('./src/lib/**/*.css')
+		.pipe(concat('lib.css'))
+		.pipe(gulp.dest('wwwroot/css'));
 });
 
 gulp.task('assets', function () {
