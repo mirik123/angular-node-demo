@@ -18,7 +18,7 @@ export class appService implements IAppService {
     public username: string = '';
     public authtoken: string = '';
     public permissions: string = '';
-    public host: string = 'http://localhost:8080'; //'https://localhost:8443';
+    public host: string = 'http://ec2-54-91-217-27.compute-1.amazonaws.com:8080'; //'https://ec2-54-91-217-27.compute-1.amazonaws.com:8443';
 
     static $inject = ['$http', '$rootScope'];
     constructor($http, $rootScope) {

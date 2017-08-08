@@ -16,15 +16,17 @@ import { Utils } from './utils';
 
 var app = express();
 
-const client_path = process.env.PROJ_CLIENT || __dirname + '/../wwwroot/client';
+const client_path = process.env.PROJ_LOCAL_CLIENT;
+const http_port = process.env.PROJ_PORT;
+const https_port = process.env.PROJ_SSL_PORT;
 
 // all environments
 //app.set('port', process.env.PORT || 3000);
-app.use(favicon(client_path + '/assets/icons/favicon.ico'));
+if(client_path) app.use(favicon(client_path + '/assets/icons/favicon.ico'));
 app.use(morgan('combined'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(express.static(client_path));
+if(client_path) app.use(express.static(client_path));
 //app.use(cookieParser());
 /*app.use(session({
     secret: '123456',
@@ -108,8 +110,8 @@ app.use('/api/login', require('./routes/login'));
 app.use('/api/profile', require('./routes/profile'));
 app.use('/api/users', require('./routes/users'));
 
-http.createServer(app).listen(8080, function () {
-    console.log('Express server listening on port 8080 and folder: ' + client_path);
+http.createServer(app).listen(http_port, function () {
+    console.log('Express server listening on port '+http_port);
     Utils.init();
     //Utils.seed(); //development only
 });
@@ -129,8 +131,8 @@ https.createServer({
 	ca: fs.readFileSync(__dirname + '/sslcert/ca.crt'),
 	requestCert: true,
 	rejectUnauthorized: false
-}, app).listen(8443, function () {
-    console.log("Secure Express server listening on port 8443");
+}, app).listen(https_port, function () {
+    console.log("Secure Express server listening on port "+https_port);
     Utils.init();
     //Utils.seed(); //development only
 });
