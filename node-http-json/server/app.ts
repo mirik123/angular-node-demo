@@ -125,10 +125,11 @@ http.createServer(app).listen(http_port, function () {
 //cp server.key server.key.passphrase
 //openssl rsa -in server.key.passphrase -out server.key
 //openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+var dirname = process.cwd();
 https.createServer({
-	key: fs.readFileSync(__dirname + '/sslcert/server.key'),
-	cert: fs.readFileSync(__dirname + '/sslcert/server.crt'),
-	ca: fs.readFileSync(__dirname + '/sslcert/ca.crt'),
+	key: fs.readFileSync(dirname + '/sslcert/server.key'),
+	cert: fs.readFileSync(dirname + '/sslcert/server.crt'),
+	ca: fs.readFileSync(dirname + '/sslcert/ca.crt'),
 	requestCert: true,
 	rejectUnauthorized: false
 }, app).listen(https_port, function () {
