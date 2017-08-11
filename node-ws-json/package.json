@@ -40,7 +40,8 @@
   "name": "node-http-json",
   "scripts": {
     "postinstall": "tsd install && typings install",
-    "start": "gulp"
+    "start": "gulp",
+	"build": "gulp build"
   },
   "version": "1.0.0"
 }

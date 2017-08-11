@@ -26,8 +26,8 @@ export class appService implements IAppService {
     public title: any;
     public username: string = '';
     public permissions: string = '';
-    public wsurl: string = 'ws://localhost:8080/ws'; //'wss://localhost:8443/ws';
-    public httpurl: string = 'http://localhost:8080/api'; //'https://localhost:8443/api';
+    public wsurl: string = 'ws://http://ec2-54-198-80-141.compute-1.amazonaws.com:8080/ws'; //'wss://http://ec2-54-198-80-141.compute-1.amazonaws.com:8443/ws';
+    public httpurl: string = 'http://ec2-54-198-80-141.compute-1.amazonaws.com:8080'; //'https://ec2-54-198-80-141.compute-1.amazonaws.com.com:8443';
     public events: Rx.Subject<rxEvent>;
     //public observable: Rx.Observable<rxEvent>;
     //public observer: Rx.Observer<rxEvent>;

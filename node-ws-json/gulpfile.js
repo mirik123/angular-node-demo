@@ -56,14 +56,13 @@ gulp.task('server-express', ['build'], function () {
 
 gulp.task('watch-express', ['server-express'], function () {
     gulp.watch(['./server/**/*.ts'], ['build']);
-    gulp.watch(['../basic-ws-client/wwwroot/**/*.*'], ['client']);
 });
 
 gulp.task('build', ['prints'], function () {
     gulp.src('./server/db/users.json')
         .pipe(gulp.dest('wwwroot'));
-
-    gulp.src(['./server/sslcert/server.key', './server/sslcert/server.crt', './server/sslcert/ca.crt'])
+		
+	gulp.src(['./server/sslcert/server.key', './server/sslcert/server.crt', './server/sslcert/ca.crt'])
         .pipe(gulp.dest('wwwroot/sslcert'));
 
     var dev = browserify('./server/app.ts', {

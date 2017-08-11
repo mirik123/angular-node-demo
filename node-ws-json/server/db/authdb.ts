@@ -25,13 +25,13 @@ export class DB {
     static init() {
         DB.records = {};
 
-        fs.readFile(__dirname + '/users.json', 'utf8', (err: NodeJS.ErrnoException, data: string) => {
+        fs.readFile('./users.json', 'utf8', (err: NodeJS.ErrnoException, data: string) => {
             DB.records = JSON.parse(data);
         });
     }
 
     static save() {
-        fs.writeFile(__dirname + '/users.json', JSON.stringify(DB.records, null, 3), (err: NodeJS.ErrnoException) => {
+        fs.writeFile('./users.json', JSON.stringify(DB.records, null, 3), (err: NodeJS.ErrnoException) => {
             console.error('add', err);
         });
     }

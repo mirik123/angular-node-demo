@@ -47,7 +47,7 @@ export class DB {
                 replset: { socketOptions: { keepAlive: 120 } }
             };
 
-            mongoose.connect('mongodb://localhost:27017/local', options);        
+            mongoose.connect('mongodb://'+process.env.DB_HOST+':'+process.env.DB_PORT+'/'+process.env.DB, options);        
 
             mongoose.connection.on('error', (msg) => {
                 console.error('mongoose error: ', msg);

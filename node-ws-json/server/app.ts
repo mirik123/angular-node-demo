@@ -20,16 +20,18 @@ var fs = require('fs');
 
 var app = express();
 
-const client_path = process.env.PROJ_CLIENT || __dirname + '/../wwwroot/client';
+if(process.env.BASE_DIR) process.chdir(process.env.BASE_DIR);
+const client_path = process.env.PROJ_LOCAL_CLIENT;
+const http_port = process.env.PROJ_PORT;
 
 // all environments
 //app.set('port', process.env.PORT || 3000);
-app.use(favicon(client_path + '/assets/icons/favicon.ico'));
+if(client_path) app.use(favicon(client_path + '/assets/icons/favicon.ico'));
 app.use(morgan('combined'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(express.static(client_path));
-//app.use(cookieParser('123456'));
+if(client_path) app.use(express.static(client_path));
+//app.use(cookieParser());
 
 var sessionReq = session({
     secret: '123456',
@@ -50,19 +52,20 @@ app.use(function (err, req: express.Request, res: express.Response, next) {
 app.use(function (req: express.Request, res: express.Response, next) {
     console.log(req.method + ' ' + req.url);
 
-    if (req.method === 'OPTIONS') {
-        res.set('Access-Control-Request-Method', '*');
-        res.set('Access-Control-Allow-Origin', req.headers['origin']);
-        res.set('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-        //res.set('Access-Control-Allow-Headers', '*');
-        res.set('Access-Control-Allow-Credentials', 'true');
-
-        res.sendStatus(200);
-        return;
-    }
+	res.set('Access-Control-Request-Method', '*');
+	res.set('Access-Control-Allow-Origin', req.headers['origin']);
+	res.set('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+	res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Sec-Websocket-Protocol');
+	res.set('Access-Control-Allow-Credentials', 'true');
+	
+	if (req.method === 'OPTIONS') {
+	  res.sendStatus(200);
+	  return;
+	}
 
     if (req.url === '/api') {
         res.sendStatus(200);
+		return;
     }
 
     next();
@@ -98,8 +101,8 @@ wsServer.on("connection", client => evtWebSockedConnected(wsServer, client)).on(
     headers.push('Set-Cookie: connect.sid=1');
 });*/
 
-httpsrv.listen(8080, function () {
-    console.log('Express server listening on port 8080 and folder: ' + client_path);
+httpsrv.listen(http_port, function () {
+    console.log('Express server listening on port ' + http_port);
 });
 
 //https://matoski.com/article/node-express-generate-ssl/
@@ -112,14 +115,14 @@ httpsrv.listen(8080, function () {
 //openssl rsa -in server.key.passphrase -out server.key
 //openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 /*var httpssrv = https.createServer({
-    key: fs.readFileSync(__dirname + '/sslcert/server.key'),
-    cert: fs.readFileSync(__dirname + '/sslcert/server.crt'),
-    ca: fs.readFileSync(__dirname + '/sslcert/ca.crt'),
+	key: fs.readFileSync('./sslcert/server.key'),
+	cert: fs.readFileSync('./sslcert/server.crt'),
+	ca: fs.readFileSync('./sslcert/ca.crt'),
     requestCert: true,
     rejectUnauthorized: false
 }, app);
-httpssrv.listen(8443, function () {
-    console.log("Secure Express server listening on port 8443");
+httpssrv.listen(https_port, function () {
+    console.log("Secure Express server listening on port "+https_port);
 });
 
 wsServer = new WebSocket.Server({

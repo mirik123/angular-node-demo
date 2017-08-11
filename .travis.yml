@@ -13,6 +13,8 @@ script:
 - mkdir -p $TRAVIS_BUILD_DIR/client/basic-http-client && mv $TRAVIS_BUILD_DIR/basic-http-client/wwwroot/* $TRAVIS_BUILD_DIR/client/basic-http-client/
 - cd $TRAVIS_BUILD_DIR/node-http-json && npm install && npm run build
 - mkdir -p $TRAVIS_BUILD_DIR/server/node-http-json && mv $TRAVIS_BUILD_DIR/node-http-json/wwwroot/* $TRAVIS_BUILD_DIR/server/node-http-json/
+- cd $TRAVIS_BUILD_DIR/node-http-mongodb-es6 && npm install && npm run build
+- mkdir -p $TRAVIS_BUILD_DIR/server/node-db-es6 && mv $TRAVIS_BUILD_DIR/node-http-mongodb-es6/wwwroot/* $TRAVIS_BUILD_DIR/server/node-db-es6/
 deploy:
 - provider: releases
   api_key:
@@ -37,7 +39,7 @@ deploy:
     branch: master
 - provider: script
   skip_cleanup: true
-  script: scp -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -i $TRAVIS_BUILD_DIR/ec2deploy.key -rBvq $TRAVIS_BUILD_DIR/server ${SSH_USER}@${SSH_HOST}:server
+  script: scp -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -i $TRAVIS_BUILD_DIR/ec2deploy.key -rBvq $TRAVIS_BUILD_DIR/server/. ${SSH_USER}@${SSH_HOST}:/home/${SSH_USER}/server
   on:
     repo: mirik123/angular-node-demo
     branch: master

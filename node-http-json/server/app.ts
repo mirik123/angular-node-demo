@@ -16,6 +16,7 @@ import { Utils } from './utils';
 
 var app = express();
 
+if(process.env.BASE_DIR) process.chdir(process.env.BASE_DIR);
 const client_path = process.env.PROJ_LOCAL_CLIENT;
 const http_port = process.env.PROJ_PORT;
 const https_port = process.env.PROJ_SSL_PORT;
@@ -35,25 +36,18 @@ if(client_path) app.use(express.static(client_path));
     cookie: { secure: true }
 }));*/
 
-// development only
-app.use(function (err, req: express.Request, res: express.Response, next) {
-	console.error(err.stack);
-	res.status(500).json({ error: 'unknown error' });
-	res.end();
-});
-
 app.use(function (req: express.Request, res: express.Response, next) {
     console.log(req.method + ' ' + req.url);
 
+	res.set('Access-Control-Request-Method', '*');
+	res.set('Access-Control-Allow-Origin', req.headers['origin']);
+	res.set('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+	res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Sec-Websocket-Protocol');
+	res.set('Access-Control-Allow-Credentials', 'true');
+	
 	if (req.method === 'OPTIONS') {
-		res.set('Access-Control-Request-Method', '*');
-        res.set('Access-Control-Allow-Origin', req.headers['origin']);
-        res.set('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-        res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Sec-Websocket-Protocol');
-        res.set('Access-Control-Allow-Credentials', 'true');
-		
-        res.sendStatus(200);
-		return;
+	  res.sendStatus(200);
+	  return;
 	}
 
 	next();
@@ -110,11 +104,20 @@ app.use('/api/login', require('./routes/login'));
 app.use('/api/profile', require('./routes/profile'));
 app.use('/api/users', require('./routes/users'));
 
-http.createServer(app).listen(http_port, function () {
-    console.log('Express server listening on port '+http_port);
-    Utils.init();
-    //Utils.seed(); //development only
+// development only
+app.use(function (err, req: express.Request, res: express.Response, next) {
+    console.error(err.stack);
+    res.status(500).json({ error: 'unknown error' });
+    res.end();
 });
+
+if(http_port) {
+	http.createServer(app).listen(http_port, function () {
+		console.log('Express server listening on port '+http_port);
+		Utils.init();
+		//Utils.seed(); //development only
+	});
+}
 
 //https://matoski.com/article/node-express-generate-ssl/
 //openssl genrsa -des3 -out ca.key 1024
@@ -125,15 +128,16 @@ http.createServer(app).listen(http_port, function () {
 //cp server.key server.key.passphrase
 //openssl rsa -in server.key.passphrase -out server.key
 //openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
-var dirname = process.cwd();
-https.createServer({
-	key: fs.readFileSync(dirname + '/sslcert/server.key'),
-	cert: fs.readFileSync(dirname + '/sslcert/server.crt'),
-	ca: fs.readFileSync(dirname + '/sslcert/ca.crt'),
-	requestCert: true,
-	rejectUnauthorized: false
-}, app).listen(https_port, function () {
-    console.log("Secure Express server listening on port "+https_port);
-    Utils.init();
-    //Utils.seed(); //development only
-});
+if(https_port) {
+	https.createServer({
+		key: fs.readFileSync('./sslcert/server.key'),
+		cert: fs.readFileSync('./sslcert/server.crt'),
+		ca: fs.readFileSync('./sslcert/ca.crt'),
+		requestCert: true,
+		rejectUnauthorized: false
+	}, app).listen(https_port, function () {
+		console.log("Secure Express server listening on port "+https_port);
+		Utils.init();
+		//Utils.seed(); //development only
+	});
+}

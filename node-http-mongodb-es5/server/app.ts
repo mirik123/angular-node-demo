@@ -16,15 +16,18 @@ import { Utils } from './utils';
 
 var app = express();
 
-const client_path = process.env.PROJ_CLIENT || __dirname + '/../wwwroot/client';
+if(process.env.BASE_DIR) process.chdir(process.env.BASE_DIR);
+const client_path = process.env.PROJ_LOCAL_CLIENT;
+const http_port = process.env.PROJ_PORT;
+const https_port = process.env.PROJ_SSL_PORT;
 
-// all environments 
+// all environments
 //app.set('port', process.env.PORT || 3000);
-app.use(favicon(client_path + '/assets/icons/favicon.ico'));
+if(client_path) app.use(favicon(client_path + '/assets/icons/favicon.ico'));
 app.use(morgan('combined'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(express.static(client_path));
+if(client_path) app.use(express.static(client_path));
 //app.use(cookieParser());
 /*app.use(session({
     secret: '123456',
@@ -33,19 +36,18 @@ app.use(express.static(client_path));
     cookie: { secure: true }
 }));*/
 
-
 app.use(function (req: express.Request, res: express.Response, next) {
     console.log(req.method + ' ' + req.url);
 
+	res.set('Access-Control-Request-Method', '*');
+	res.set('Access-Control-Allow-Origin', req.headers['origin']);
+	res.set('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+	res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Sec-Websocket-Protocol');
+	res.set('Access-Control-Allow-Credentials', 'true');
+	
 	if (req.method === 'OPTIONS') {
-		res.set('Access-Control-Request-Method', '*');
-        res.set('Access-Control-Allow-Origin', req.headers['origin']);
-        res.set('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-        res.set('Access-Control-Allow-Headers', req.headers['origin']);
-        res.set('Access-Control-Allow-Credentials', 'true');
-		
-        res.sendStatus(200);
-		return;
+	  res.sendStatus(200);
+	  return;
 	}
 
 	next();
@@ -109,9 +111,10 @@ app.use(function (err, req: express.Request, res: express.Response, next) {
     res.end();
 });
 
+if(http_port) {
 var server = http.createServer(app)
-    .listen(8080, function () {
-        console.log('Express server listening on port 8080 and folder: ' + client_path);
+    .listen(http_port, function () {
+        console.log('Express server listening on port  ' + http_port);
         Utils.init();
     }).on('close', function () {
         console.log(' Stopping ...');
@@ -121,6 +124,7 @@ var server = http.createServer(app)
 process.on('SIGINT', function () {
     server.close();
 });
+}
 
 //https://matoski.com/article/node-express-generate-ssl/
 //openssl genrsa -des3 -out ca.key 1024
@@ -131,14 +135,15 @@ process.on('SIGINT', function () {
 //cp server.key server.key.passphrase
 //openssl rsa -in server.key.passphrase -out server.key
 //openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
-/*https.createServer({
-	key: fs.readFileSync(__dirname + '/sslcert/server.key'),
-	cert: fs.readFileSync(__dirname + '/sslcert/server.crt'),
-	ca: fs.readFileSync(__dirname + '/sslcert/ca.crt'),
+if(https_port) {
+https.createServer({
+	key: fs.readFileSync('./sslcert/server.key'),
+	cert: fs.readFileSync('./sslcert/server.crt'),
+	ca: fs.readFileSync('./sslcert/ca.crt'),
 	requestCert: true,
 	rejectUnauthorized: false
-}, app).listen(8443, function () {
-    console.log("Secure Express server listening on port 8443");
+}, app).listen(https_port, function () {
+    console.log("Secure Express server listening on port "+https_port);
     Utils.Utils.init();
-});*/
-
+});
+}
