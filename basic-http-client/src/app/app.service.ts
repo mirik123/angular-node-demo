@@ -18,7 +18,7 @@ export class appService implements IAppService {
     public username: string = '';
     public authtoken: string = '';
     public permissions: string = '';
-    public host: string = 'http://ec2-54-91-217-27.compute-1.amazonaws.com:8080'; //'https://ec2-54-91-217-27.compute-1.amazonaws.com:8443';
+    public host: string = 'http://ec2-54-198-80-141.compute-1.amazonaws.com:8080'; //'https://ec2-54-198-80-141.compute-1.amazonaws.com.com:8443';
 
     static $inject = ['$http', '$rootScope'];
     constructor($http, $rootScope) {
@@ -31,7 +31,7 @@ export class appService implements IAppService {
         var base64creds = Buffer.from(username + ':' + password, 'utf8').toString('base64');
         return base64creds;
     }
-
+	
     public http(url: string, method: string, headers?: ng.IHttpRequestConfigHeaders, data?): ng.IHttpPromise<any> {
         var defheaders = {};
         defheaders['Content-Type'] = 'application/json';
