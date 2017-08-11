@@ -49,7 +49,7 @@ app.use(function (req: express.Request, res: express.Response, next) {
 		res.set('Access-Control-Request-Method', '*');
         res.set('Access-Control-Allow-Origin', req.headers['origin']);
         res.set('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-        res.set('Access-Control-Allow-Headers', req.headers['origin']);
+        res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Sec-Websocket-Protocol');
         res.set('Access-Control-Allow-Credentials', 'true');
 		
         res.sendStatus(200);
