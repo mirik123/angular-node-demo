@@ -145,6 +145,6 @@ https.createServer({
 	rejectUnauthorized: false
 }, app).listen(https_port, function () {
     console.log("Secure Express server listening on port "+https_port);
-    Utils.Utils.init();
+    Utils.init();
 });
 }
