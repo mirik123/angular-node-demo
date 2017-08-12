@@ -91,7 +91,7 @@ export class DB {
         });
     }
 
-    static findbyname(username: string): Promise<Record> {
+    static findbyname(username: string): Promise<any> {
         return DB.records.findOne({ username: username }).lean().exec();
     }
 
