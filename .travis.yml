@@ -13,8 +13,6 @@ script:
 - mkdir -p $TRAVIS_BUILD_DIR/client/basic-http-client && mv $TRAVIS_BUILD_DIR/basic-http-client/wwwroot/* $TRAVIS_BUILD_DIR/client/basic-http-client/
 - cd $TRAVIS_BUILD_DIR/node-http-json && npm install && npm run build
 - mkdir -p $TRAVIS_BUILD_DIR/server/node-http-json && mv $TRAVIS_BUILD_DIR/node-http-json/wwwroot/* $TRAVIS_BUILD_DIR/server/node-http-json/
-- cd $TRAVIS_BUILD_DIR/node-http-mongodb-es6 && npm install && npm run build
-- mkdir -p $TRAVIS_BUILD_DIR/server/node-db-es6 && mv $TRAVIS_BUILD_DIR/node-http-mongodb-es6/wwwroot/* $TRAVIS_BUILD_DIR/server/node-db-es6/
 deploy:
 - provider: releases
   api_key:
