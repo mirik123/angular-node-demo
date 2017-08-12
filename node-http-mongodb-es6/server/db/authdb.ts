@@ -107,7 +107,7 @@ export class DB {
         return DB.records.remove({}).exec();
     }
     
-    static findall(): Promise<Record[]> {
+    static findall(): Promise<any[]> {
         return DB.records.find({}).lean().exec();
     }
 
