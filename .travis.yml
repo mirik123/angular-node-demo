@@ -37,7 +37,7 @@ deploy:
     branch: master
 - provider: script
   skip_cleanup: true
-  script: scp -c blowfish-cbc -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -i $TRAVIS_BUILD_DIR/ec2deploy.key -rBvq $TRAVIS_BUILD_DIR/server/. ${SSH_USER}@${SSH_HOST}:/home/${SSH_USER}/server
+  script: scp -c aes256-gcm@openssh.com -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -i $TRAVIS_BUILD_DIR/ec2deploy.key -rBv $TRAVIS_BUILD_DIR/server/. ${SSH_USER}@${SSH_HOST}:/home/${SSH_USER}/server
   on:
     repo: mirik123/angular-node-demo
     branch: master
