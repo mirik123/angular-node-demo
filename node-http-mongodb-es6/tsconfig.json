@@ -1,16 +1,19 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "noImplicitAny": false,
-    "removeComments": false,
-    "preserveConstEnums": true,
-    "sourceMap": true,
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "jsx": "react"
+    "jsx": "react",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es6",
+    "outDir": "build"
   },
-  "exclude": [
-    "node_modules"
+  "include": [
+    "server/**/*"
   ]
 }

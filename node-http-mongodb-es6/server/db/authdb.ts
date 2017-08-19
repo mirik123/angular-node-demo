@@ -1,7 +1,5 @@
 ﻿import fs = require('fs');
 import _ = require("lodash");
-
-require('es6-promise').polyfill();
 import mongoose = require('mongoose');
 
 export interface IRecord {
@@ -51,24 +49,25 @@ export class DB {
         mongoose.Promise = <any>global.Promise;
 
         return new Promise<{}>((resolve, reject) => {
+            console.log('initalizing mongo db...');
+
             if (mongoose.connection.readyState) {
-                console.error('mongoose is already connected, readyState=', mongoose.connection.readyState);
+                console.log('mongoose is already connected, readyState=', mongoose.connection.readyState);
                 reject('already connected');
                 return;
             }
 
-            var options: mongoose.ConnectionOptions = {
+            var options = {
                 //user: 'admin',
                 //pass: 'admin',
                 //promiseLibrary: global.Promise,
-                server: { socketOptions: { keepAlive: 120 } },
-                replset: { socketOptions: { keepAlive: 120 } }
+                useMongoClient: true,
+                keepAlive: 120
             };
 
-            mongoose.connect('mongodb://'+process.env.DB_HOST+':'+process.env.DB_PORT+'/'+process.env.DB, options);        
-
+            mongoose.connect('mongodb://'+process.env['DB_HOST']+':'+process.env['DB_PORT']+'/local', options);   
+            
             mongoose.connection.on('error', (msg) => {
-                console.error('mongoose error: ', msg);
                 reject(msg);
             });
 
@@ -77,11 +76,12 @@ export class DB {
             });
 
             mongoose.connection.on('connected', () => {
-                console.error('mongoose connected: ');
+                console.log('mongoose connected');
             });
 
-            mongoose.connection.once('open', () => {
-                DB.records = mongoose.model<IRecordModel>('IRecord', schema);
+            mongoose.connection.on('open', () => {
+                console.log('connection is opened');
+                DB.records = mongoose.model<IRecordModel>('records', schema);
 
                 resolve();
             });

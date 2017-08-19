@@ -3,7 +3,7 @@ import express = require('express');
 import https = require('https');
 import http = require('http');
 import path = require('path');
-var bodyParser = require('body-parser');
+import bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 //var cookieParser = require('cookie-parser');
 //var session = require('express-session');
@@ -14,10 +14,10 @@ import { Utils } from './utils';
 
 var app = express();
 
-if(process.env.BASE_DIR) process.chdir(process.env.BASE_DIR);
-const client_path = process.env.PROJ_LOCAL_CLIENT;
-const http_port = process.env.PROJ_PORT;
-const https_port = process.env.PROJ_SSL_PORT;
+if(process.env['BASE_DIR']) process.chdir(process.env['BASE_DIR']);
+const client_path = process.env['PROJ_LOCAL_CLIENT'];
+const http_port = process.env['PROJ_PORT'];
+const https_port = process.env['PROJ_SSL_PORT'];
 
 // all environments
 //app.set('port', process.env.PORT || 3000);
@@ -146,3 +146,9 @@ https.createServer({
     Utils.init();
 });
 }
+
+process.on('uncaughtException', function (err) {
+    console.error((new Date).toUTCString() + ' uncaughtException:', err.message);
+    console.error(err.stack);
+    process.exit(1);
+});

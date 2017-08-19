@@ -10,10 +10,10 @@ export class Utils {
     static async init(): Promise<void> {
         try {
             await DB.init();
-            //await this.seed();
+            if(process.env['DB_SEED']) await this.seed();
         }
         catch (err) {
-
+            console.error(err);
         }
     }
 
