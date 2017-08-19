@@ -16,7 +16,9 @@ script:
 - cd $TRAVIS_BUILD_DIR/node-http-json && npm install && npm run build
 - mkdir -p $TRAVIS_BUILD_DIR/server/node-http-json && mv $TRAVIS_BUILD_DIR/node-http-json/wwwroot/* $TRAVIS_BUILD_DIR/server/node-http-json/
 - cd $TRAVIS_BUILD_DIR/node-http-mongodb-es6 && npm install && npm run build
-- mkdir -p $TRAVIS_BUILD_DIR/server/node-db-es6 && mv $TRAVIS_BUILD_DIR/node-http-mongodb-es6/wwwroot/* $TRAVIS_BUILD_DIR/server/node-db-es6/
+- mkdir -p $TRAVIS_BUILD_DIR/server/node-db-es6/build && mkdir -p $TRAVIS_BUILD_DIR/server/node-db-es6/node_modules
+- mv $TRAVIS_BUILD_DIR/node-http-mongodb-es6/build/* $TRAVIS_BUILD_DIR/server/node-db-es6/build
+- mv $TRAVIS_BUILD_DIR/node-http-mongodb-es6/node_modules/* $TRAVIS_BUILD_DIR/server/node-db-es6/node_modules
 deploy:
 - provider: releases
   api_key:
