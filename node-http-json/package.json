@@ -34,7 +34,6 @@
   "main": "index.js",
   "name": "node-http-json",
   "scripts": {
-    "postinstall": "tsd install && typings install",
     "start": "gulp",
 	"build": "gulp build"
   },

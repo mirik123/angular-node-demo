@@ -56,7 +56,6 @@
   "main": "index.js",
   "name": "basic-ws-rx-client",
   "scripts": {
-    "postinstall": "tsd install && typings install",
     "start": "gulp",
 	"build": "gulp build"
   },

@@ -61,9 +61,8 @@
   "main": "index.js",
   "name": "basic-http-client",
   "scripts": {
-   "postinstall": "tsd install && typings install",
     "start": "gulp",
-	"zip": "gulp zip"
+	"build": "gulp build"
   },
   "version": "1.0.0"
 }

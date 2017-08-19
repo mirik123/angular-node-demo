@@ -35,9 +35,8 @@
   },
   "keywords": [],
   "main": "index.js",
-  "name": "node-http-mongodb-es6",
+  "name": "node-http-mongodb-es5",
   "scripts": {
-    "postinstall": "tsd install && typings install",
     "start": "gulp",
 	"build": "gulp build"
   },
