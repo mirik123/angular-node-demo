@@ -56,6 +56,7 @@
   "main": "index.js",
   "name": "basic-ws-rx-client",
   "scripts": {
+    "postinstall": "typings install",
     "start": "gulp",
 	"build": "gulp build"
   },
