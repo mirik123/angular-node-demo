@@ -4,15 +4,15 @@
 
 |Project name|Project description|
 |---|---|
-|[basic-http-project](https://github.com/mirik123/angular-node-demo/tree/master/basic-http-client)|AngularJS 1.6 frontend project. <br/>Using: $cookies, $http, $rootScope.$emit, Basic/Bearer header authentication.|
+|[basic-http-project](https://github.com/mirik123/angular-node-demo/tree/master/basic-http-client)|AngularJS 1.6 frontend project. <br/>Using: $cookies, $http, $rootScope.$emit, Basic/Bearer header authentication, gulp/tsify/browserify.|
 |[](https://github.com/mirik123/angular-node-demo/tree/master/basic-ws-client)|AngularJS 1.6 frontend project. <br/>Using: $rootScope.$emit, dummy $http request for opening "Express.Session" and WebSockets for other regular operations. <br/>Applicative authentication by WebSocket login request.|
 |[basic-ws-rx-client](https://github.com/mirik123/angular-node-demo/tree/master/basic-ws-rx-client)|AngularJS 1.6 frontend project. <br/>The same as the previous project but implements events with Observable instead of the $rootScope.$emit.|
 |[ng2-http-client](https://github.com/mirik123/angular-node-demo/tree/master/ng2-http-client)|AngularJS 2.0 frontend project. <br/>Using: $http, Observable, ng2-cookies, router. <br/>*Not completed yet, missing analogues code for NG-MESSAGE and MD-DATA-TABLE.*|
-|[node-http-json](https://github.com/mirik123/angular-node-demo/tree/master/node-http-json)|NodeJS backend project. <br/>Using: TypeScript to ES5, gulp, JSON file for authentication repository.|
+|[node-http-json](https://github.com/mirik123/angular-node-demo/tree/master/node-http-json)|NodeJS backend project. <br/>Using: TypeScript to ES5, gulp/tsify/no browserify, JSON file for authentication repository.|
 |[node-http-mongodb-es5](https://github.com/mirik123/angular-node-demo/tree/master/node-http-mongodb-es5)|NodeJS backend project. <br/>Using: TypeScript to ES5, gulp, MongoDB with callbacks for authentication repository.|
 |<nobr>[node-http-mongodb-es6](https://github.com/mirik123/angular-node-demo/tree/master/node-http-mongodb-es6)</nobr>|NodeJS backend project. <br/>Using: TypeScript to ES6, gulp, MongoDB with async/await for authentication repository.|
 |[node-ws-json](https://github.com/mirik123/angular-node-demo/tree/master/node-ws-json)|NodeJS backend project for WebSocket clients. <br/>Using: TypeScript to ES5, gulp, WS, Express.Session|
-|[node-http-mongodb-react]()|NodeJS backend project with Express and ReactJS as template engine.<br/>*Currently is under development.*|
+|[node-lambda](https://github.com/mirik123/angular-node-demo/tree/master/node-lambda)|AWS Lambda project. Using: TypeScript to ES6, async/await, gulp with tsify and partial broserify except mongoose, ts-jasmine for unitests. The session is valid for 5 min becuse of the Lambda container reuse policy.|
 
 # General
 All frontend projects are SPA applications that use Angular 1.6/2.0 with TypeScript and Responsive Material Design.

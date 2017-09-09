@@ -20,6 +20,19 @@ let routes = {
 let handler: Handler = (event: APIGatewayEvent, context: Context, callback: Callback) => {
     if(context) context.callbackWaitsForEmptyEventLoop = false;
 
+    let done = (status:number, data) => {
+        callback(null, {
+            isBase64Encoded: false,
+            statusCode: status,
+            headers: {
+                'Content-Type': 'application/json',
+                "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+                "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+            },
+            body: data && (typeof data !== 'string') && JSON.stringify(data) || data
+        })
+    }
+
     //console.log('Received event:', JSON.stringify(event, null, 2));
 
     let locals, 
@@ -32,10 +45,7 @@ let handler: Handler = (event: APIGatewayEvent, context: Context, callback: Call
         if(routes.middleware) {
             routes.middleware(event).then(response => {
                 if(response[0]) {
-                    if(response[0] === 200)
-                        resolve(response[1])
-                    else
-                        reject(new Error(response[1]))
+                    resolve(response)
                 }
                 else {
                     locals = response[1].locals
@@ -55,21 +65,18 @@ let handler: Handler = (event: APIGatewayEvent, context: Context, callback: Call
         }
     }).then(data => {
         if(data)
-            return callback(null, data)
+            return done(data[0], data[1])
 
         let routeHandle = routes[event.httpMethod+'_'+event.resource]
         if(routeHandle) {
             routeHandle(locals, body, params, query, headers).then(response => {
-                if(response[0] === 200)
-                    callback(null, response[1])
-                else
-                    callback(new Error(response[1]))
+                done(response[0], response[1])
             }, err => {
                 callback(err)
             })
         }
         else {
-            callback(new Error('Unsupported method: '+event.httpMethod+', '+event.resource))
+            done(400, 'Unsupported method: '+event.httpMethod+', '+event.resource)
         }
     }, err => {
         callback(err)

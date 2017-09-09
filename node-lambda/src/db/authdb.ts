@@ -51,6 +51,7 @@ export class DB {
         return new Promise<{}>((resolve, reject) => {
             console.log('initalizing mongo db...');
 
+            //TODO: https://github.com/rlondner/aws-stepfunctions-samples/blob/master/restaurants/index.js
             if (mongoose.connection.readyState) {
                 console.log('mongoose is already connected, readyState=', mongoose.connection.readyState);
                 if(!DB.records) DB.records = mongoose.model<IRecordModel>('records', schema);
