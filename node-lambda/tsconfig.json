@@ -1,0 +1,22 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "jsx": "react",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "noImplicitAny": false,
+      "preserveConstEnums": true,
+      "removeComments": false,
+      "sourceMap": true,
+      "target": "es6",
+      "outDir": "build"
+    },
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

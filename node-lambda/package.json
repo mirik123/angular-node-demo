@@ -1,0 +1,55 @@
+{
+  "author": "mark babayev",
+  "license": "MIT",
+  "description": "proof-of-concept lambda project",
+  "repository": {
+    "url": "https://github.com/mirik123/angular-node-demo"
+  },
+  "version": "1.0.0",
+  "keywords": [],
+  "main": "index.js",
+  "name": "node-lambda",
+  "scripts": {
+    "start": "node build/app.js",
+    "build:tsc": "tsc",
+    "build:bundle": "gulp",
+    "test:lambda": "lambda-local -f build/main.js",
+    "test:jasmine": "jasmine-ts test/test.spec.ts"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^0.0.16",
+    "@types/aws-sdk": "^2.7.0",
+    "@types/debug": "^0.0.30",
+    "@types/jasmine": "^2.5.54",
+    "@types/mongodb": "^2.2.11",
+    "@types/mongoose": "^4.7.21",
+    "@types/node": "^8.0.26",
+    "browserify": "^14.4.0",
+    "chai": "^4.1.2",
+    "gulp": "^3.9.1",
+    "gulp-debug": "^3.1.0",
+    "gulp-if": "^2.0.2",
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-strip-debug": "^1.1.0",
+    "gulp-uglify": "^3.0.0",
+    "gulp-uglify-es": "^0.1.3",
+    "jasmine": "^2.8.0",
+    "lambda-local": "^1.4.2",
+    "mocha": "^3.5.0",
+    "sinon": "^3.2.1",
+    "tsify": "^3.0.1",
+    "typescript": "^2.5.2",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "jasmine-ts": "^0.2.1",
+    "aws-lambda-local": "^1.0.15",
+    "aws-lambda-router": "^0.2.2"
+  },
+  "dependencies": {
+    "aws-lambda": "^0.1.2",
+    "aws-sdk": "^2.111.0",
+    "debug": "^3.0.1",
+    "mongodb": "^2.2.31",
+    "mongoose": "^4.11.10"
+  }
+}
